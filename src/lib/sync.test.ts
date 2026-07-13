@@ -4,7 +4,7 @@ import {
   applySyncPatch,
   createSyncState,
   historyEntryToSet,
-  recordDrawHistory,
+  recordCreatedSetHistory,
   removeHistoryEntry,
 } from "./sync";
 
@@ -60,12 +60,12 @@ describe("sync state helpers", () => {
     expect(next.history).not.toBe(state.history);
   });
 
-  it("records every squad draw result at the front of history", () => {
-    const next = recordDrawHistory([historyEntry], [result], 300);
+  it("records a created set at the front of history", () => {
+    const next = recordCreatedSetHistory([historyEntry], set, 300);
 
     expect(next).toEqual([
       {
-        id: "history-300-0",
+        id: "history-set-300-set-1",
         playerName: "玩家 1",
         set,
         drawnAt: 300,

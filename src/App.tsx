@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { catalog } from "./data/generatedCatalog";
 import { drawSquadSets, rollQuickLoadout } from "./lib/random";
 import { loadJson, saveJson } from "./lib/storage";
-import { historyEntryToSet, recordDrawHistory, removeHistoryEntry } from "./lib/sync";
+import { historyEntryToSet, recordCreatedSetHistory, removeHistoryEntry } from "./lib/sync";
 import { getRandomizableStratagems } from "./lib/stratagems";
 import type {
   ClientSyncMessage,
@@ -294,17 +294,21 @@ export default function App() {
     if (selectedStratagemIds.length !== 4) return;
     const owner = setOwner.trim() || players[0]?.name || "玩家";
     const name = setName.trim() || `${owner} 的战备 ${sets.length + 1}`;
+    const createdSet: StratagemSet = {
+      id: `set-${Date.now()}`,
+      ownerName: owner,
+      name,
+      stratagemIds: selectedStratagemIds as [string, string, string, string],
+    };
+
     setSets((current) => {
-      const next = [
-        ...current,
-        {
-        id: `set-${Date.now()}`,
-        ownerName: owner,
-        name,
-        stratagemIds: selectedStratagemIds as [string, string, string, string],
-      },
-      ];
+      const next = [...current, createdSet];
       sendSyncPatch({ sets: next });
+      return next;
+    });
+    setHistory((current) => {
+      const next = recordCreatedSetHistory(current, createdSet);
+      sendSyncPatch({ history: next });
       return next;
     });
     setSetName("");
@@ -316,11 +320,7 @@ export default function App() {
     try {
       const results = drawSquadSets(players, sets);
       setSquadResults(results);
-      setHistory((current) => {
-        const next = recordDrawHistory(current, results);
-        sendSyncPatch({ squadResults: results, history: next });
-        return next;
-      });
+      sendSyncPatch({ squadResults: results });
       setSquadError("");
     } catch (error) {
       setSquadError(error instanceof Error ? error.message : "抽取失败");
@@ -471,7 +471,7 @@ export default function App() {
                   </div>
                 </div>
               ))}
-              {history.length === 0 && <div className="emptyLine">抽取多人战备后会自动保存到这里。</div>}
+              {history.length === 0 && <div className="emptyLine">创建组合后会自动保存到这里。</div>}
             </div>
           </div>
         </div>

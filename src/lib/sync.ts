@@ -1,4 +1,4 @@
-import type { DrawHistoryEntry, Player, SquadDrawResult, StratagemSet, SyncPatch, SyncState } from "../types";
+import type { DrawHistoryEntry, Player, StratagemSet, SyncPatch, SyncState } from "../types";
 
 export function createSyncState(players: Player[], now = Date.now()): SyncState {
   return {
@@ -20,19 +20,20 @@ export function applySyncPatch(state: SyncState, patch: SyncPatch, now = Date.no
   };
 }
 
-export function recordDrawHistory(
+export function recordCreatedSetHistory(
   history: DrawHistoryEntry[],
-  results: SquadDrawResult[],
+  set: StratagemSet,
   now = Date.now(),
 ): DrawHistoryEntry[] {
-  const entries = results.map((result, index) => ({
-    id: `history-${now}-${index}`,
-    playerName: result.playerName,
-    set: result.set,
-    drawnAt: now,
-  }));
-
-  return [...entries, ...history];
+  return [
+    {
+      id: `history-set-${now}-${set.id}`,
+      playerName: set.ownerName,
+      set,
+      drawnAt: now,
+    },
+    ...history,
+  ];
 }
 
 export function removeHistoryEntry(history: DrawHistoryEntry[], id: string): DrawHistoryEntry[] {
