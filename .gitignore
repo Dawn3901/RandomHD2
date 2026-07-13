@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.randomhd2/
 *.log
 *.tsbuildinfo
 vite.config.js

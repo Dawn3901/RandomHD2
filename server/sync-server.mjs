@@ -3,23 +3,11 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
+import { loadStoredState, saveStoredState } from "./state-store.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const distDir = path.join(root, "dist");
-
-const defaultPlayers = [
-  { id: "player-1", name: "玩家 1" },
-  { id: "player-2", name: "玩家 2" },
-];
-
-let state = {
-  players: defaultPlayers,
-  sets: [],
-  squadResults: [],
-  history: [],
-  updatedAt: Date.now(),
-};
 
 const args = new Map();
 for (let index = 2; index < process.argv.length; index += 2) {
@@ -32,6 +20,24 @@ for (let index = 2; index < process.argv.length; index += 2) {
 
 const host = args.get("host") || process.env.HOST || "127.0.0.1";
 const port = Number(args.get("port") || process.env.PORT || 5173);
+const stateFilePath = path.resolve(
+  args.get("state-file") || process.env.RANDOMHD2_STATE_FILE || path.join(root, ".randomhd2", "sync-state.json"),
+);
+
+const defaultPlayers = [
+  { id: "player-1", name: "玩家 1" },
+  { id: "player-2", name: "玩家 2" },
+];
+
+const initialState = {
+  players: defaultPlayers,
+  sets: [],
+  squadResults: [],
+  history: [],
+  updatedAt: Date.now(),
+};
+
+let state = loadStoredState(stateFilePath, initialState);
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -131,6 +137,7 @@ webSocketServer.on("connection", (socket) => {
       history: Array.isArray(message.patch.history) ? message.patch.history : state.history,
       updatedAt: Date.now(),
     };
+    saveStoredState(stateFilePath, state);
 
     broadcast({ type: "state", state });
   });
@@ -142,5 +149,6 @@ webSocketServer.on("connection", (socket) => {
 
 server.listen(port, host, () => {
   console.log(`RandomHD2 sync server ready at http://${host}:${port}/`);
+  console.log(`Local shared state is stored at ${stateFilePath}`);
   console.log("Expose this HTTP address with SakuraFRP to share both the page and WebSocket sync.");
 });
