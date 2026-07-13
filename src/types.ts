@@ -60,3 +60,21 @@ export type SquadDrawResult = {
   playerName: string;
   set: StratagemSet;
 };
+
+export type SyncState = {
+  players: Player[];
+  sets: StratagemSet[];
+  squadResults: SquadDrawResult[];
+  updatedAt: number;
+};
+
+export type SyncPatch = Partial<Pick<SyncState, "players" | "sets" | "squadResults">>;
+
+export type ServerSyncMessage =
+  | { type: "state"; state: SyncState }
+  | { type: "presence"; clients: number };
+
+export type ClientSyncMessage = {
+  type: "patch";
+  patch: SyncPatch;
+};

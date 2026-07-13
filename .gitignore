@@ -1,6 +1,6 @@
 node_modules/
 dist/
-dev-server*.log
+*.log
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts

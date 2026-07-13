@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "generate:data": "node scripts/generate-data.mjs"
+    "generate:data": "node scripts/generate-data.mjs",
+    "sync": "node server/sync-server.mjs",
+    "share": "npm run build && node server/sync-server.mjs --host 0.0.0.0 --port 5173"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
@@ -15,7 +17,8 @@
     "react-dom": "^19.0.0",
     "typescript": "^5.8.0",
     "vite": "^7.0.0",
-    "vitest": "^3.2.0"
+    "vitest": "^3.2.0",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

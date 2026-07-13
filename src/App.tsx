@@ -1,9 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { catalog } from "./data/generatedCatalog";
 import { drawSquadSets, rollQuickLoadout } from "./lib/random";
 import { loadJson, saveJson } from "./lib/storage";
 import { getRandomizableStratagems } from "./lib/stratagems";
-import type { Player, QuickLoadout, SquadDrawResult, Stratagem, StratagemSet, Weapon } from "./types";
+import type {
+  ClientSyncMessage,
+  Player,
+  QuickLoadout,
+  ServerSyncMessage,
+  SquadDrawResult,
+  Stratagem,
+  StratagemSet,
+  SyncPatch,
+  Weapon,
+} from "./types";
 
 const STORAGE_KEYS = {
   enabledIds: "randomhd2.enabledItems",
@@ -109,6 +119,9 @@ export default function App() {
   const [browserTab, setBrowserTab] = useState<"stratagems" | "weapons" | "grenades">("stratagems");
   const [query, setQuery] = useState("");
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<"connecting" | "connected" | "local">("connecting");
+  const [syncClients, setSyncClients] = useState(1);
+  const wsRef = useRef<WebSocket | null>(null);
 
   const enabledSet = useMemo(() => new Set(enabledIds), [enabledIds]);
 
@@ -116,6 +129,64 @@ export default function App() {
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.players, players), [players]);
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.sets, sets), [sets]);
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.lastRoll, quickRoll), [quickRoll]);
+  useEffect(() => {
+    if (!players.some((player) => player.name === setOwner)) {
+      setSetOwner(players[0]?.name || "玩家 1");
+    }
+  }, [players, setOwner]);
+
+  useEffect(() => {
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const socket = new WebSocket(`${protocol}://${window.location.host}/sync`);
+    wsRef.current = socket;
+
+    socket.onopen = () => {
+      setSyncStatus("connected");
+    };
+
+    socket.onmessage = (event) => {
+      let message: ServerSyncMessage;
+      try {
+        message = JSON.parse(String(event.data)) as ServerSyncMessage;
+      } catch {
+        return;
+      }
+
+      if (message.type === "state") {
+        setPlayers(message.state.players);
+        setSets(message.state.sets);
+        setSquadResults(message.state.squadResults);
+      }
+
+      if (message.type === "presence") {
+        setSyncClients(message.clients);
+      }
+    };
+
+    socket.onerror = () => {
+      setSyncStatus("local");
+    };
+
+    socket.onclose = () => {
+      if (wsRef.current === socket) {
+        wsRef.current = null;
+        setSyncStatus("local");
+        setSyncClients(1);
+      }
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  const sendSyncPatch = (patch: SyncPatch) => {
+    const socket = wsRef.current;
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+
+    const message: ClientSyncMessage = { type: "patch", patch };
+    socket.send(JSON.stringify(message));
+  };
 
   const enabledCounts = useMemo(
     () => ({
@@ -179,12 +250,18 @@ export default function App() {
       while (next.length < count) {
         next.push({ id: `player-${next.length + 1}`, name: `玩家 ${next.length + 1}` });
       }
-      return next.slice(0, count);
+      const sliced = next.slice(0, count);
+      sendSyncPatch({ players: sliced });
+      return sliced;
     });
   };
 
   const updatePlayerName = (index: number, name: string) => {
-    setPlayers((current) => current.map((player, itemIndex) => (itemIndex === index ? { ...player, name } : player)));
+    setPlayers((current) => {
+      const next = current.map((player, itemIndex) => (itemIndex === index ? { ...player, name } : player));
+      sendSyncPatch({ players: next });
+      return next;
+    });
     if (index === 0 && setOwner === players[0]?.name) setSetOwner(name);
   };
 
@@ -200,15 +277,19 @@ export default function App() {
     if (selectedStratagemIds.length !== 4) return;
     const owner = setOwner.trim() || players[0]?.name || "玩家";
     const name = setName.trim() || `${owner} 的战备 ${sets.length + 1}`;
-    setSets((current) => [
-      ...current,
-      {
+    setSets((current) => {
+      const next = [
+        ...current,
+        {
         id: `set-${Date.now()}`,
         ownerName: owner,
         name,
         stratagemIds: selectedStratagemIds as [string, string, string, string],
       },
-    ]);
+      ];
+      sendSyncPatch({ sets: next });
+      return next;
+    });
     setSetName("");
     setSelectedStratagemIds([]);
     setSquadError("");
@@ -216,11 +297,21 @@ export default function App() {
 
   const drawSquad = () => {
     try {
-      setSquadResults(drawSquadSets(players, sets));
+      const results = drawSquadSets(players, sets);
+      setSquadResults(results);
+      sendSyncPatch({ squadResults: results });
       setSquadError("");
     } catch (error) {
       setSquadError(error instanceof Error ? error.message : "抽取失败");
     }
+  };
+
+  const removeSet = (id: string) => {
+    setSets((current) => {
+      const next = current.filter((item) => item.id !== id);
+      sendSyncPatch({ sets: next });
+      return next;
+    });
   };
 
   const stratagemById = useMemo(
@@ -237,6 +328,8 @@ export default function App() {
           <p>Helldivers 2 本地随机器。快速随机配装，也支持朋友开黑时从自定义战备池不重复抽取。</p>
         </div>
         <div className="heroStats">
+          <strong>{syncStatus === "connected" ? syncClients : "本地"}</strong>
+          <span>{syncStatus === "connected" ? "同步在线" : syncStatus === "connecting" ? "尝试同步" : "本地模式"}</span>
           <strong>{randomizableStratagems.length}</strong>
           <span>可选战备</span>
           <strong>{catalog.weapons.length + catalog.grenades.length}</strong>
@@ -358,7 +451,7 @@ export default function App() {
                   <strong>{set.name}</strong>
                   <span>{set.ownerName}</span>
                 </div>
-                <button onClick={() => setSets((current) => current.filter((item) => item.id !== set.id))}>删除</button>
+                <button onClick={() => removeSet(set.id)}>删除</button>
               </div>
             ))}
             {sets.length === 0 && <div className="emptyLine">还没有自定义组合。</div>}
