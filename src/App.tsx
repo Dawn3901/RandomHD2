@@ -429,8 +429,7 @@ export default function App() {
           <div className="drawResults">
             {squadResults.map((result) => (
               <div key={result.playerName} className="drawCard">
-                <span>{result.playerName}</span>
-                <strong>{result.set.name}</strong>
+                <strong className="drawPlayerName">{result.playerName}</strong>
                 <div className="iconStrip">
                   {result.set.stratagemIds.map((id) => {
                     const item = stratagemById.get(id);

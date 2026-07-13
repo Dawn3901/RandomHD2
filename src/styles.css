@@ -343,8 +343,11 @@ label {
   padding: 12px;
 }
 
-.drawCard strong {
-  font-size: 20px;
+.drawPlayerName {
+  color: var(--accent);
+  font-size: 28px;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .historyMeta {
