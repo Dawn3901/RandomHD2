@@ -17,6 +17,7 @@ let state = {
   players: defaultPlayers,
   sets: [],
   squadResults: [],
+  history: [],
   updatedAt: Date.now(),
 };
 
@@ -127,6 +128,7 @@ webSocketServer.on("connection", (socket) => {
       players: Array.isArray(message.patch.players) ? message.patch.players : state.players,
       sets: Array.isArray(message.patch.sets) ? message.patch.sets : state.sets,
       squadResults: Array.isArray(message.patch.squadResults) ? message.patch.squadResults : state.squadResults,
+      history: Array.isArray(message.patch.history) ? message.patch.history : state.history,
       updatedAt: Date.now(),
     };
 

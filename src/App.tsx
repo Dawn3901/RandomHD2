@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { catalog } from "./data/generatedCatalog";
 import { drawSquadSets, rollQuickLoadout } from "./lib/random";
 import { loadJson, saveJson } from "./lib/storage";
+import { historyEntryToSet, recordDrawHistory, removeHistoryEntry } from "./lib/sync";
 import { getRandomizableStratagems } from "./lib/stratagems";
 import type {
   ClientSyncMessage,
+  DrawHistoryEntry,
   Player,
   QuickLoadout,
   ServerSyncMessage,
@@ -20,6 +22,7 @@ const STORAGE_KEYS = {
   players: "randomhd2.players",
   sets: "randomhd2.stratagemSets",
   lastRoll: "randomhd2.lastRoll",
+  history: "randomhd2.drawHistory",
 };
 
 const randomizableStratagems = getRandomizableStratagems(catalog.stratagems);
@@ -33,6 +36,15 @@ const defaultPlayers: Player[] = [
 
 function itemLabel(item: { nameZh?: string; nameEn: string }) {
   return item.nameZh || item.nameEn;
+}
+
+function formatHistoryTime(timestamp: number) {
+  return new Intl.DateTimeFormat("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(timestamp));
 }
 
 function AssetIcon({ src, alt }: { src: string; alt: string }) {
@@ -115,6 +127,9 @@ export default function App() {
   const [setOwner, setSetOwner] = useState(players[0]?.name || "玩家 1");
   const [selectedStratagemIds, setSelectedStratagemIds] = useState<string[]>([]);
   const [squadResults, setSquadResults] = useState<SquadDrawResult[]>([]);
+  const [history, setHistory] = useState<DrawHistoryEntry[]>(() =>
+    loadJson(window.localStorage, STORAGE_KEYS.history, []),
+  );
   const [squadError, setSquadError] = useState("");
   const [browserTab, setBrowserTab] = useState<"stratagems" | "weapons" | "grenades">("stratagems");
   const [query, setQuery] = useState("");
@@ -129,6 +144,7 @@ export default function App() {
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.players, players), [players]);
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.sets, sets), [sets]);
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.lastRoll, quickRoll), [quickRoll]);
+  useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.history, history), [history]);
   useEffect(() => {
     if (!players.some((player) => player.name === setOwner)) {
       setSetOwner(players[0]?.name || "玩家 1");
@@ -156,6 +172,7 @@ export default function App() {
         setPlayers(message.state.players);
         setSets(message.state.sets);
         setSquadResults(message.state.squadResults);
+        setHistory(message.state.history || []);
       }
 
       if (message.type === "presence") {
@@ -299,7 +316,11 @@ export default function App() {
     try {
       const results = drawSquadSets(players, sets);
       setSquadResults(results);
-      sendSyncPatch({ squadResults: results });
+      setHistory((current) => {
+        const next = recordDrawHistory(current, results);
+        sendSyncPatch({ squadResults: results, history: next });
+        return next;
+      });
       setSquadError("");
     } catch (error) {
       setSquadError(error instanceof Error ? error.message : "抽取失败");
@@ -309,6 +330,23 @@ export default function App() {
   const removeSet = (id: string) => {
     setSets((current) => {
       const next = current.filter((item) => item.id !== id);
+      sendSyncPatch({ sets: next });
+      return next;
+    });
+  };
+
+  const removeHistory = (id: string) => {
+    setHistory((current) => {
+      const next = removeHistoryEntry(current, id);
+      sendSyncPatch({ history: next });
+      return next;
+    });
+  };
+
+  const addHistoryToPool = (entry: DrawHistoryEntry) => {
+    const reusedSet = historyEntryToSet(entry);
+    setSets((current) => {
+      const next = [...current, reusedSet];
       sendSyncPatch({ sets: next });
       return next;
     });
@@ -401,6 +439,40 @@ export default function App() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="historyBlock">
+            <div className="historyHead">
+              <div>
+                <span className="eyebrow">HISTORY</span>
+                <h3>历史配装</h3>
+              </div>
+              <span>{history.length} 条</span>
+            </div>
+
+            <div className="historyList">
+              {history.map((entry) => (
+                <div key={entry.id} className="historyItem">
+                  <div className="historyMeta">
+                    <strong>{entry.set.name}</strong>
+                    <span>
+                      {entry.playerName} · {formatHistoryTime(entry.drawnAt)}
+                    </span>
+                  </div>
+                  <div className="iconStrip">
+                    {entry.set.stratagemIds.map((id) => {
+                      const item = stratagemById.get(id);
+                      return item ? <AssetIcon key={id} src={item.icon} alt={itemLabel(item)} /> : null;
+                    })}
+                  </div>
+                  <div className="historyActions">
+                    <button onClick={() => addHistoryToPool(entry)}>加入池子</button>
+                    <button onClick={() => removeHistory(entry.id)}>删除</button>
+                  </div>
+                </div>
+              ))}
+              {history.length === 0 && <div className="emptyLine">抽取多人战备后会自动保存到这里。</div>}
+            </div>
           </div>
         </div>
 

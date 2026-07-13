@@ -61,14 +61,22 @@ export type SquadDrawResult = {
   set: StratagemSet;
 };
 
+export type DrawHistoryEntry = {
+  id: string;
+  playerName: string;
+  set: StratagemSet;
+  drawnAt: number;
+};
+
 export type SyncState = {
   players: Player[];
   sets: StratagemSet[];
   squadResults: SquadDrawResult[];
+  history: DrawHistoryEntry[];
   updatedAt: number;
 };
 
-export type SyncPatch = Partial<Pick<SyncState, "players" | "sets" | "squadResults">>;
+export type SyncPatch = Partial<Pick<SyncState, "players" | "sets" | "squadResults" | "history">>;
 
 export type ServerSyncMessage =
   | { type: "state"; state: SyncState }

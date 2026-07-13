@@ -300,8 +300,42 @@ label {
   gap: 10px;
 }
 
+.historyBlock {
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.historyHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.historyHead h3 {
+  margin: 4px 0 0;
+  font-size: 18px;
+}
+
+.historyHead > span,
+.historyMeta span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.historyList {
+  display: grid;
+  gap: 8px;
+  max-height: 430px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
 .drawCard,
-.poolItem {
+.poolItem,
+.historyItem {
   display: grid;
   gap: 10px;
   background: #0d100f;
@@ -311,6 +345,21 @@ label {
 
 .drawCard strong {
   font-size: 20px;
+}
+
+.historyMeta {
+  display: grid;
+  gap: 4px;
+}
+
+.historyMeta strong {
+  overflow-wrap: anywhere;
+}
+
+.historyActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .iconStrip {
