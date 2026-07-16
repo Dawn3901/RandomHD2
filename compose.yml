@@ -1,0 +1,13 @@
+﻿services:
+  randomhd2:
+    build: .
+    container_name: randomhd2
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=5173
+      - RANDOMHD2_STATE_FILE=/app/.randomhd2/sync-state.json
+    volumes:
+      - ./data:/app/.randomhd2
