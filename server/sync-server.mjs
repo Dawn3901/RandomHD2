@@ -3,7 +3,7 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
-import { createQuickRollText } from "./quick-roll.mjs";
+import { createQuickRollPng, createQuickRollSvg, createQuickRollText } from "./quick-roll.mjs";
 import { loadStoredState, saveStoredState } from "./state-store.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -62,6 +62,28 @@ function sendText(response, status, payload) {
   response.end(payload);
 }
 
+function sendSvg(response, status, payload) {
+  response.writeHead(status, {
+    "content-type": "image/svg+xml; charset=utf-8",
+    "cache-control": "no-store",
+  });
+  response.end(payload);
+}
+
+function sendPng(response, status, payload) {
+  response.writeHead(status, {
+    "content-type": "image/png",
+    "cache-control": "no-store",
+  });
+  response.end(payload);
+}
+
+function publicBaseUrlFor(request) {
+  const protocol = request.headers["x-forwarded-proto"] || "http";
+  const requestHost = request.headers["x-forwarded-host"] || request.headers.host || `${host}:${port}`;
+  return `${protocol}://${requestHost}`;
+}
+
 function resolveStaticPath(urlPath) {
   const decoded = decodeURIComponent(urlPath.split("?")[0] || "/");
   const requested = decoded === "/" ? "/index.html" : decoded;
@@ -80,7 +102,7 @@ function resolveStaticPath(urlPath) {
 
 let webSocketServer;
 
-const server = http.createServer((request, response) => {
+const server = http.createServer(async (request, response) => {
   if (request.url === "/health") {
     sendJson(response, 200, { ok: true, clients: webSocketServer?.clients.size || 0 });
     return;
@@ -99,6 +121,24 @@ const server = http.createServer((request, response) => {
   if (!filePath) {
     response.writeHead(403);
     response.end("Forbidden");
+    return;
+  }
+
+  if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll.svg") {
+    try {
+      sendSvg(response, 200, createQuickRollSvg(catalog, publicBaseUrlFor(request)));
+    } catch (error) {
+      sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
+    }
+    return;
+  }
+
+  if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll.png") {
+    try {
+      sendPng(response, 200, await createQuickRollPng(catalog, publicBaseUrlFor(request)));
+    } catch (error) {
+      sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
+    }
     return;
   }
 

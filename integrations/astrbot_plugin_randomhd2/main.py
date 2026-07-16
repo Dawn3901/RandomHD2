@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 import aiohttp
 
 from astrbot.api import AstrBotConfig, logger
@@ -9,6 +7,7 @@ from astrbot.api.event import AstrMessageEvent, filter
 from astrbot.api.star import Context, Star
 
 DEFAULT_QUICK_ROLL_URL = "http://randomhd2:5173/api/quick-roll"
+DEFAULT_QUICK_ROLL_IMAGE_URL = "http://randomhd2:5173/api/quick-roll.png"
 
 
 class RandomHD2Plugin(Star):
@@ -26,6 +25,9 @@ class RandomHD2Plugin(Star):
         self.quick_roll_url = str(
             self.config.get("quick_roll_url") or DEFAULT_QUICK_ROLL_URL
         )
+        self.quick_roll_image_url = str(
+            self.config.get("quick_roll_image_url") or DEFAULT_QUICK_ROLL_IMAGE_URL
+        )
         self.timeout = int(self.config.get("timeout") or 10)
 
     @filter.command("随机配装")
@@ -41,11 +43,23 @@ class RandomHD2Plugin(Star):
         try:
             timeout = aiohttp.ClientTimeout(total=self.timeout)
             async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(self.quick_roll_image_url) as image_response:
+                    if image_response.status == 200:
+                        yield event.image_result(self.quick_roll_image_url)
+                        return
+
+                    image_error = (await image_response.text()).strip()
+                    logger.warning(
+                        "RandomHD2 image request failed: status=%s, body=%s",
+                        image_response.status,
+                        image_error[:500],
+                    )
+
                 async with session.get(self.quick_roll_url) as response:
                     text = (await response.text()).strip()
                     if response.status != 200:
                         logger.warning(
-                            "RandomHD2 request failed: status=%s, body=%s",
+                            "RandomHD2 text request failed: status=%s, body=%s",
                             response.status,
                             text[:500],
                         )
