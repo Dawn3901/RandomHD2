@@ -8,6 +8,8 @@ const manifestPath = path.join(root, "assets", "wiki", "manifest.json");
 const publicAssetsDir = path.join(root, "public", "assets", "wiki");
 const outputDir = path.join(root, "src", "data");
 const outputFile = path.join(outputDir, "generatedCatalog.ts");
+const serverDataDir = path.join(root, "server");
+const serverCatalogFile = path.join(serverDataDir, "generated-catalog.json");
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8").replace(/^\uFEFF/, ""));
 
@@ -169,8 +171,11 @@ export const catalog = {
 `;
 
 fs.writeFileSync(outputFile, generated, "utf8");
+fs.mkdirSync(serverDataDir, { recursive: true });
+fs.writeFileSync(serverCatalogFile, JSON.stringify({ factions, stratagems, weapons, grenades }, null, 2), "utf8");
 
 console.log(`Generated ${path.relative(root, outputFile)}`);
+console.log(`Generated ${path.relative(root, serverCatalogFile)}`);
 console.log(`Factions: ${factions.length}`);
 console.log(`Stratagems: ${stratagems.length}`);
 console.log(`Weapons: ${weapons.length}`);

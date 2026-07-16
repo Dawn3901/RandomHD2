@@ -1,4 +1,4 @@
-﻿FROM node:22-bookworm-slim
+FROM m.daocloud.io/docker.io/library/node:22-bookworm-slim
 
 WORKDIR /app
 

@@ -3,11 +3,14 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
+import { createQuickRollText } from "./quick-roll.mjs";
 import { loadStoredState, saveStoredState } from "./state-store.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const distDir = path.join(root, "dist");
+const catalogPath = path.join(root, "server", "generated-catalog.json");
+const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
 
 const args = new Map();
 for (let index = 2; index < process.argv.length; index += 2) {
@@ -54,6 +57,11 @@ function sendJson(response, status, payload) {
   response.end(JSON.stringify(payload));
 }
 
+function sendText(response, status, payload) {
+  response.writeHead(status, { "content-type": "text/plain; charset=utf-8" });
+  response.end(payload);
+}
+
 function resolveStaticPath(urlPath) {
   const decoded = decodeURIComponent(urlPath.split("?")[0] || "/");
   const requested = decoded === "/" ? "/index.html" : decoded;
@@ -75,6 +83,15 @@ let webSocketServer;
 const server = http.createServer((request, response) => {
   if (request.url === "/health") {
     sendJson(response, 200, { ok: true, clients: webSocketServer?.clients.size || 0 });
+    return;
+  }
+
+  if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll") {
+    try {
+      sendText(response, 200, createQuickRollText(catalog));
+    } catch (error) {
+      sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
+    }
     return;
   }
 

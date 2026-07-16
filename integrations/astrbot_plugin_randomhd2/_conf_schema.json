@@ -1,0 +1,14 @@
+{
+  "quick_roll_url": {
+    "description": "RandomHD2 随机配装接口",
+    "type": "string",
+    "default": "http://randomhd2:5173/api/quick-roll",
+    "hint": "AstrBot 容器可访问的 RandomHD2 API 地址。两个容器在同一 Docker 网络时可使用默认值。"
+  },
+  "timeout": {
+    "description": "请求超时秒数",
+    "type": "int",
+    "default": 10,
+    "hint": "请求 RandomHD2 接口的最长等待时间。"
+  }
+}

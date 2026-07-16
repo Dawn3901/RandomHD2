@@ -1,0 +1,7 @@
+name: astrbot_plugin_randomhd2
+display_name: RandomHD2 随机配装
+desc: 调用 RandomHD2 服务生成地狱潜兵2随机配装，并回复到当前会话
+version: v0.1.0
+author: Dawn
+repo: ""
+astrbot_version: ">=4.0.0"

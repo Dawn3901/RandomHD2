@@ -1,0 +1,1708 @@
+{
+  "factions": [
+    {
+      "id": "terminids",
+      "nameZh": "终结族",
+      "nameEn": "Terminids",
+      "icon": "/assets/wiki/factions/Terminid_Icon.svg"
+    },
+    {
+      "id": "illuminate",
+      "nameZh": "光能族",
+      "nameEn": "Illuminate",
+      "icon": "/assets/wiki/factions/Illuminate_Icon.svg"
+    },
+    {
+      "id": "automatons",
+      "nameZh": "机器人",
+      "nameEn": "Automatons",
+      "icon": "/assets/wiki/factions/Automaton_Icon.svg"
+    }
+  ],
+  "stratagems": [
+    {
+      "id": "eagle-110mm-rocket-pods",
+      "nameEn": "Eagle 110mm Rocket Pods",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_110mm_Rocket_Pods_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "eagle-500kg-bomb",
+      "nameEn": "Eagle 500kg Bomb",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_500kg_Bomb_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "eagle-airstrike",
+      "nameEn": "Eagle Airstrike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_Airstrike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "eagle-cluster-bomb",
+      "nameEn": "Eagle Cluster Bomb",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_Cluster_Bomb_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "eagle-napalm-airstrike",
+      "nameEn": "Eagle Napalm Airstrike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_Napalm_Airstrike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "eagle-smoke-strike",
+      "nameEn": "Eagle Smoke Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_Smoke_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "eagle-strafing-run",
+      "nameEn": "Eagle Strafing Run",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Eagle_Strafing_Run_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-120mm-he-barrage",
+      "nameEn": "Orbital 120mm HE Barrage",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_120mm_HE_Barrage_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-380mm-he-barrage",
+      "nameEn": "Orbital 380mm HE Barrage",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_380mm_HE_Barrage_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-airburst-strike",
+      "nameEn": "Orbital Airburst Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Airburst_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-ems-strike",
+      "nameEn": "Orbital EMS Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_EMS_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-gas-strike",
+      "nameEn": "Orbital Gas Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Gas_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-gatling-barrage",
+      "nameEn": "Orbital Gatling Barrage",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Gatling_Barrage_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-laser",
+      "nameEn": "Orbital Laser",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Laser_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-napalm-barrage",
+      "nameEn": "Orbital Napalm Barrage",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Napalm_Barrage_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-precision-strike",
+      "nameEn": "Orbital Precision Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Precision_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-railcannon-strike",
+      "nameEn": "Orbital Railcannon Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Railcannon_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-smoke-strike",
+      "nameEn": "Orbital Smoke Strike",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Smoke_Strike_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "orbital-walking-barrage",
+      "nameEn": "Orbital Walking Barrage",
+      "kind": "red",
+      "category": "红色战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Walking_Barrage_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "airburst-rocket-launcher",
+      "nameEn": "Airburst Rocket Launcher",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Airburst_Rocket_Launcher_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "anti-materiel-rifle",
+      "nameEn": "Anti-Materiel Rifle",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Anti-Materiel_Rifle_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "arc-thrower",
+      "nameEn": "Arc Thrower",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Arc_Thrower_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "autocannon",
+      "nameEn": "Autocannon",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Autocannon_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "ballistic-shield-backpack",
+      "nameEn": "Ballistic Shield Backpack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Ballistic_Shield_Backpack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "bastion-mk-xvi",
+      "nameEn": "Bastion MK XVI",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Bastion_MK_XVI_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "belt-fed-grenade-launcher",
+      "nameEn": "Belt-Fed Grenade Launcher",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Belt-Fed_Grenade_Launcher_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "breaching-hammer",
+      "nameEn": "Breaching Hammer",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Breaching_Hammer_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "breakthrough-exosuit",
+      "nameEn": "Breakthrough Exosuit",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Breakthrough_Exosuit_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "bullet-storm",
+      "nameEn": "Bullet Storm",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Bullet_Storm_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "c4-pack",
+      "nameEn": "C4 Pack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/C4_Pack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "commando",
+      "nameEn": "Commando",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Commando_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "cremator",
+      "nameEn": "Cremator",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Cremator_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "de-escalator",
+      "nameEn": "De-Escalator",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/De-Escalator_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "defoliation-tool",
+      "nameEn": "Defoliation Tool",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Defoliation_Tool_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "directional-shield",
+      "nameEn": "Directional Shield",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Directional_Shield_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "dog-breath",
+      "nameEn": "Dog Breath",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Dog_Breath_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "emancipator-exosuit",
+      "nameEn": "Emancipator Exosuit",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Emancipator_Exosuit_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "epoch",
+      "nameEn": "Epoch",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Epoch_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "expendable-anti-tank",
+      "nameEn": "Expendable Anti-Tank",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Expendable_Anti-Tank_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "expendable-napalm",
+      "nameEn": "Expendable Napalm",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Expendable_Napalm_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "fast-recon-vehicle",
+      "nameEn": "Fast Recon Vehicle",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Fast_Recon_Vehicle_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "flamethrower",
+      "nameEn": "Flamethrower",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Flamethrower_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "grenade-launcher",
+      "nameEn": "Grenade Launcher",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Grenade_Launcher_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "guard-dog",
+      "nameEn": "Guard Dog",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Guard_Dog_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "heavy-machine-gun",
+      "nameEn": "Heavy Machine Gun",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Heavy_Machine_Gun_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "hot-dog",
+      "nameEn": "Hot Dog",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Hot_Dog_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "hover-pack",
+      "nameEn": "Hover Pack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Hover_Pack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "incinerator-frv",
+      "nameEn": "Incinerator FRV",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Incinerator_FRV_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "jump-pack",
+      "nameEn": "Jump Pack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Jump_Pack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "k-9",
+      "nameEn": "K-9",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/K-9_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "laser-cannon",
+      "nameEn": "Laser Cannon",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Laser_Cannon_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "leveller",
+      "nameEn": "Leveller",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Leveller_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "lumberer-exosuit",
+      "nameEn": "Lumberer Exosuit",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Lumberer_Exosuit_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "machine-gun",
+      "nameEn": "Machine Gun",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Machine_Gun_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "maxigun",
+      "nameEn": "Maxigun",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Maxigun_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "one-true-flag",
+      "nameEn": "One True Flag",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/One_True_Flag_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "patriot-exosuit",
+      "nameEn": "Patriot Exosuit",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Patriot_Exosuit_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "portable-hellbomb",
+      "nameEn": "Portable Hellbomb",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Portable_Hellbomb_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "quasar-cannon",
+      "nameEn": "Quasar Cannon",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Quasar_Cannon_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "railgun",
+      "nameEn": "Railgun",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Railgun_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "recoilless-rifle",
+      "nameEn": "Recoilless Rifle",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Recoilless_Rifle_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "rover",
+      "nameEn": "Rover",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Rover_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "shield-generator-pack",
+      "nameEn": "Shield Generator Pack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Shield_Generator_Pack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "solo-silo",
+      "nameEn": "Solo Silo",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Solo_Silo_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "spear",
+      "nameEn": "Spear",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Spear_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "speargun",
+      "nameEn": "Speargun",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Speargun_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "stalwart",
+      "nameEn": "Stalwart",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Stalwart_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "sterilizer",
+      "nameEn": "Sterilizer",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Sterilizer_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "supply-frv",
+      "nameEn": "Supply FRV",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Supply_FRV_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "supply-pack",
+      "nameEn": "Supply Pack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Supply_Pack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "w-a-s-p-launcher",
+      "nameEn": "W.A.S.P. Launcher",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/W.A.S.P._Launcher_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "warp-pack",
+      "nameEn": "Warp Pack",
+      "kind": "blue",
+      "category": "蓝色战备",
+      "icon": "/assets/wiki/stratagems/Warp_Pack_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "anti-personnel-minefield",
+      "nameEn": "Anti-Personnel Minefield",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Anti-Personnel_Minefield_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "anti-tank-emplacement",
+      "nameEn": "Anti-Tank Emplacement",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Anti-Tank_Emplacement_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "anti-tank-mines",
+      "nameEn": "Anti-Tank Mines",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Anti-Tank_Mines_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "autocannon-sentry",
+      "nameEn": "Autocannon Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Autocannon_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "ems-mortar-sentry",
+      "nameEn": "EMS Mortar Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/EMS_Mortar_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "flame-sentry",
+      "nameEn": "Flame Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Flame_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "gas-mines",
+      "nameEn": "Gas Mines",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Gas_Mines_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "gas-mortar-sentry",
+      "nameEn": "Gas Mortar Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Gas_Mortar_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "gatling-sentry",
+      "nameEn": "Gatling Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Gatling_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "grenadier-battlement",
+      "nameEn": "Grenadier Battlement",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Grenadier_Battlement_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "hmg-emplacement",
+      "nameEn": "HMG Emplacement",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/HMG_Emplacement_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "incendiary-mines",
+      "nameEn": "Incendiary Mines",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Incendiary_Mines_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "laser-sentry",
+      "nameEn": "Laser Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Laser_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "machine-gun-sentry",
+      "nameEn": "Machine Gun Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Machine_Gun_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "mortar-sentry",
+      "nameEn": "Mortar Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Mortar_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "rocket-sentry",
+      "nameEn": "Rocket Sentry",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Rocket_Sentry_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "shield-generator-relay",
+      "nameEn": "Shield Generator Relay",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Shield_Generator_Relay_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "tesla-tower",
+      "nameEn": "Tesla Tower",
+      "kind": "green",
+      "category": "绿色战备",
+      "icon": "/assets/wiki/stratagems/Tesla_Tower_Stratagem_Icon_Background.svg",
+      "selectable": true,
+      "enabled": true
+    },
+    {
+      "id": "call-in-super-destroyer",
+      "nameEn": "Call In Super Destroyer",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Call_In_Super_Destroyer_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "cargo-container",
+      "nameEn": "Cargo Container",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Cargo_Container_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "dark-fluid-vessel",
+      "nameEn": "Dark Fluid Vessel",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Dark_Fluid_Vessel_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "drill",
+      "nameEn": "Drill",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Drill_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "eagle-rearm",
+      "nameEn": "Eagle Rearm",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Eagle_Rearm_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "hellbomb",
+      "nameEn": "Hellbomb",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Hellbomb_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "orbital-illumination-flare",
+      "nameEn": "Orbital Illumination Flare",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Orbital_Illumination_Flare_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "reinforce",
+      "nameEn": "Reinforce",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Reinforce_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "resupply",
+      "nameEn": "Resupply",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Resupply_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "seaf-artillery",
+      "nameEn": "SEAF Artillery",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/SEAF_Artillery_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "seismic-probe",
+      "nameEn": "Seismic Probe",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Seismic_Probe_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "sos-beacon",
+      "nameEn": "SOS Beacon",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/SOS_Beacon_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "super-earth-flag",
+      "nameEn": "Super Earth Flag",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Super_Earth_Flag_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    },
+    {
+      "id": "upload-data",
+      "nameEn": "Upload Data",
+      "kind": "yellow",
+      "category": "黄色任务战备",
+      "icon": "/assets/wiki/stratagems/Upload_Data_Stratagem_Icon_Background.svg",
+      "selectable": false,
+      "enabled": true
+    }
+  ],
+  "weapons": [
+    {
+      "id": "ar-2-coyote",
+      "nameEn": "AR-2 Coyote",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-2_Coyote_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-23-liberator",
+      "nameEn": "AR-23 Liberator",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-23_Liberator_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-23a-liberator-carbine",
+      "nameEn": "AR-23A Liberator Carbine",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-23A_Liberator_Carbine_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-23c-liberator-concussive",
+      "nameEn": "AR-23C Liberator Concussive",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-23C_Liberator_Concussive_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-23p-liberator-penetrator",
+      "nameEn": "AR-23P Liberator Penetrator",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-23P_Liberator_Penetrator_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-32-pacifier",
+      "nameEn": "AR-32 Pacifier",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-32_Pacifier_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-59-suppressor",
+      "nameEn": "AR-59 Suppressor",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-59_Suppressor_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-61-tenderizer",
+      "nameEn": "AR-61 Tenderizer",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-61_Tenderizer_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ar-gl-21-one-two",
+      "nameEn": "AR-GL-21 One Two",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/AR-GL-21_One_Two_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "arc-12-blitzer",
+      "nameEn": "ARC-12 Blitzer",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/ARC-12_Blitzer_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "br-14-adjudicator",
+      "nameEn": "BR-14 Adjudicator",
+      "slot": "primary",
+      "category": "Assault Rifle",
+      "icon": "/assets/wiki/weapons/BR-14_Adjudicator_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cb-9-exploding-crossbow",
+      "nameEn": "CB-9 Exploding Crossbow",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/CB-9_Exploding_Crossbow_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cqc-19-stun-lance",
+      "nameEn": "CQC-19 Stun Lance",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/CQC-19_Stun_Lance_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cqc-2-saber",
+      "nameEn": "CQC-2 Saber",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/CQC-2_Saber_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cqc-30-stun-baton",
+      "nameEn": "CQC-30 Stun Baton",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/CQC-30_Stun_Baton_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cqc-42-machete",
+      "nameEn": "CQC-42 Machete",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/CQC-42_Machete_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cqc-5-combat-hatchet",
+      "nameEn": "CQC-5 Combat Hatchet",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/CQC-5_Combat_Hatchet_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "cqc-73-entrenchment-tool",
+      "nameEn": "CQC-73 Entrenchment Tool",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/CQC-73_Entrenchment_Tool_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "dbs-2-shotgun",
+      "nameEn": "DBS-2 Shotgun",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/DBS-2_Shotgun_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "flam-66-torcher",
+      "nameEn": "FLAM-66 Torcher",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/FLAM-66_Torcher_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "gp-20-ultimatum",
+      "nameEn": "GP-20 Ultimatum",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/GP-20_Ultimatum_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "gp-31-grenade-pistol",
+      "nameEn": "GP-31 Grenade Pistol",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/GP-31_Grenade_Pistol_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "jar-5-dominator",
+      "nameEn": "JAR-5 Dominator",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/JAR-5_Dominator_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "las-13-trident",
+      "nameEn": "LAS-13 Trident",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/LAS-13_Trident_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "las-16-sickle",
+      "nameEn": "LAS-16 Sickle",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/LAS-16_Sickle_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "las-17-double-edge-sickle",
+      "nameEn": "LAS-17 Double-Edge Sickle",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/LAS-17_Double-Edge_Sickle_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "las-5-scythe",
+      "nameEn": "LAS-5 Scythe",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/LAS-5_Scythe_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "las-58-talon",
+      "nameEn": "LAS-58 Talon",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/LAS-58_Talon_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "las-7-dagger",
+      "nameEn": "LAS-7 Dagger",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/LAS-7_Dagger_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "m6c-socom-pistol",
+      "nameEn": "M6C-SOCOM Pistol",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/M6C-SOCOM_Pistol_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "m7s-smg",
+      "nameEn": "M7S SMG",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/M7S_SMG_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "m90a-shotgun",
+      "nameEn": "M90A Shotgun",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/M90A_Shotgun_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ma5c-assault-rifle",
+      "nameEn": "MA5C Assault Rifle",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/MA5C_Assault_Rifle_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "mp-98-knight",
+      "nameEn": "MP-98 Knight",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/MP-98_Knight_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-11-stim-pistol",
+      "nameEn": "P-11 Stim Pistol",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/P-11_Stim_Pistol_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-113-verdict",
+      "nameEn": "P-113 Verdict",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/P-113_Verdict_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-19-redeemer",
+      "nameEn": "P-19 Redeemer",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/P-19_Redeemer_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-2-peacemaker",
+      "nameEn": "P-2 Peacemaker",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/P-2_Peacemaker_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-33-missile-pistol",
+      "nameEn": "P-33 Missile Pistol",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/P-33_Missile_Pistol_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-35-re-educator",
+      "nameEn": "P-35 Re-Educator",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/P-35_Re-Educator_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-4-senator",
+      "nameEn": "P-4 Senator",
+      "slot": "secondary",
+      "category": "Pistol",
+      "icon": "/assets/wiki/weapons/P-4_Senator_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-69-veto",
+      "nameEn": "P-69 Veto",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/P-69_Veto_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-72-crisper",
+      "nameEn": "P-72 Crisper",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/P-72_Crisper_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "p-92-warrant",
+      "nameEn": "P-92 Warrant",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/P-92_Warrant_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "plas-1-scorcher",
+      "nameEn": "PLAS-1 Scorcher",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/PLAS-1_Scorcher_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "plas-101-purifier",
+      "nameEn": "PLAS-101 Purifier",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/PLAS-101_Purifier_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "plas-15-loyalist",
+      "nameEn": "PLAS-15 Loyalist",
+      "slot": "secondary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/PLAS-15_Loyalist_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "plas-39-accelerator-rifle",
+      "nameEn": "PLAS-39 Accelerator Rifle",
+      "slot": "primary",
+      "category": "Energy",
+      "icon": "/assets/wiki/weapons/PLAS-39_Accelerator_Rifle_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-2-amendment",
+      "nameEn": "R-2 Amendment",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/R-2_Amendment_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-2124-constitution",
+      "nameEn": "R-2124 Constitution",
+      "slot": "primary",
+      "category": "Marksman Rifle",
+      "icon": "/assets/wiki/weapons/R-2124_Constitution_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-36-eruptor",
+      "nameEn": "R-36 Eruptor",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/R-36_Eruptor_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-6-deadeye",
+      "nameEn": "R-6 Deadeye",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/R-6_Deadeye_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-63-diligence",
+      "nameEn": "R-63 Diligence",
+      "slot": "primary",
+      "category": "Marksman Rifle",
+      "icon": "/assets/wiki/weapons/R-63_Diligence_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-63cs-diligence-counter-sniper",
+      "nameEn": "R-63CS Diligence Counter Sniper",
+      "slot": "primary",
+      "category": "Marksman Rifle",
+      "icon": "/assets/wiki/weapons/R-63CS_Diligence_Counter_Sniper_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "r-72-censor",
+      "nameEn": "R-72 Censor",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/R-72_Censor_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-20-halt",
+      "nameEn": "SG-20 Halt",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-20_Halt_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-22-bushwhacker",
+      "nameEn": "SG-22 Bushwhacker",
+      "slot": "secondary",
+      "category": "Secondary",
+      "icon": "/assets/wiki/weapons/SG-22_Bushwhacker_Secondary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-225-breaker",
+      "nameEn": "SG-225 Breaker",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-225_Breaker_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-225ie-breaker-incendiary",
+      "nameEn": "SG-225IE Breaker Incendiary",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-225IE_Breaker_Incendiary_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-225sp-breaker-spray-pray",
+      "nameEn": "SG-225SP Breaker Spray&Pray",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-225SP_Breaker_Spray%26Pray_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-451-cookout",
+      "nameEn": "SG-451 Cookout",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-451_Cookout_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-8-punisher",
+      "nameEn": "SG-8 Punisher",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-8_Punisher_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-8p-punisher-plasma",
+      "nameEn": "SG-8P Punisher Plasma",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-8P_Punisher_Plasma_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-8s-slugger",
+      "nameEn": "SG-8S Slugger",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/SG-8S_Slugger_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sg-97-shotgun",
+      "nameEn": "SG-97 Shotgun",
+      "slot": "primary",
+      "category": "Shotgun",
+      "icon": "/assets/wiki/weapons/SG-97_Shotgun_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "smg-203-gallant",
+      "nameEn": "SMG-203 Gallant",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/SMG-203_Gallant_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "smg-32-reprimand",
+      "nameEn": "SMG-32 Reprimand",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/SMG-32_Reprimand_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "smg-37-defender",
+      "nameEn": "SMG-37 Defender",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/SMG-37_Defender_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "smg-72-pummeler",
+      "nameEn": "SMG-72 Pummeler",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/SMG-72_Pummeler_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "smgflam-34-stoker",
+      "nameEn": "SMGFLAM-34 Stoker",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/SMGFLAM-34_Stoker_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sta-11-smg",
+      "nameEn": "StA-11 SMG",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/StA-11_SMG_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "sta-52-assault-rifle",
+      "nameEn": "StA-52 Assault Rifle",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/StA-52_Assault_Rifle_Primary_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "vg-70-variable",
+      "nameEn": "VG-70 Variable",
+      "slot": "primary",
+      "category": "Primary",
+      "icon": "/assets/wiki/weapons/VG-70_Variable_Primary_Render.png",
+      "enabled": true
+    }
+  ],
+  "grenades": [
+    {
+      "id": "g-10-incendiary",
+      "nameEn": "G-10 Incendiary",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-10_Incendiary_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-109-urchin",
+      "nameEn": "G-109 Urchin",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-109_Urchin_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-12-high-explosive",
+      "nameEn": "G-12 High Explosive",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-12_High_Explosive_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-123-thermite",
+      "nameEn": "G-123 Thermite",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-123_Thermite_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-13-incendiary-impact",
+      "nameEn": "G-13 Incendiary Impact",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-13_Incendiary_Impact_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-142-pyrotech",
+      "nameEn": "G-142 Pyrotech",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-142_Pyrotech_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-16-impact",
+      "nameEn": "G-16 Impact",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-16_Impact_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-23-stun",
+      "nameEn": "G-23 Stun",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-23_Stun_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-3-smoke",
+      "nameEn": "G-3 Smoke",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-3_Smoke_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-31-arc",
+      "nameEn": "G-31 ARC",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-31_ARC_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-4-gas",
+      "nameEn": "G-4 Gas",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-4_Gas_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-48-giga-grenade",
+      "nameEn": "G-48 Giga Grenade",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-48_Giga_Grenade_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-50-seeker",
+      "nameEn": "G-50 Seeker",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-50_Seeker_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-6-frag",
+      "nameEn": "G-6 Frag",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-6_Frag_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-7-pineapple",
+      "nameEn": "G-7 Pineapple",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-7_Pineapple_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-89-smokescreen",
+      "nameEn": "G-89 Smokescreen",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-89_Smokescreen_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "g-sh-39-shield",
+      "nameEn": "G-SH-39 Shield",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/G-SH-39_Shield_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "k-2-throwing-knife",
+      "nameEn": "K-2 Throwing Knife",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/K-2_Throwing_Knife_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "ted-63-dynamite",
+      "nameEn": "TED-63 Dynamite",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/TED-63_Dynamite_Throwable_Render.png",
+      "enabled": true
+    },
+    {
+      "id": "tm-1-lure-mine",
+      "nameEn": "TM-1 Lure Mine",
+      "slot": "grenade",
+      "category": "Grenade",
+      "icon": "/assets/wiki/weapons/TM-1_Lure_Mine_Throwable_Render.png",
+      "enabled": true
+    }
+  ]
+}
