@@ -9,6 +9,7 @@ import { loadStoredState, saveStoredState } from "./state-store.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const distDir = path.join(root, "dist");
+const publicDir = path.join(root, "public");
 const catalogPath = path.join(root, "server", "generated-catalog.json");
 const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
 
@@ -126,7 +127,7 @@ const server = http.createServer(async (request, response) => {
 
   if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll.svg") {
     try {
-      sendSvg(response, 200, createQuickRollSvg(catalog, publicBaseUrlFor(request)));
+      sendSvg(response, 200, createQuickRollSvg(catalog, publicBaseUrlFor(request), undefined, { assetRoot: publicDir }));
     } catch (error) {
       sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
     }
@@ -135,7 +136,7 @@ const server = http.createServer(async (request, response) => {
 
   if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll.png") {
     try {
-      sendPng(response, 200, await createQuickRollPng(catalog, publicBaseUrlFor(request)));
+      sendPng(response, 200, await createQuickRollPng(catalog, publicBaseUrlFor(request), undefined, { assetRoot: publicDir }));
     } catch (error) {
       sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
     }

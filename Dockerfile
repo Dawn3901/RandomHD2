@@ -2,6 +2,11 @@ FROM m.daocloud.io/docker.io/library/node:22-bookworm-slim
 
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends fonts-noto-cjk fontconfig \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
 RUN npm ci
 

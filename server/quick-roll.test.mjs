@@ -1,3 +1,6 @@
+﻿import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { createQuickRollPng, createQuickRollSvg, createQuickRollText } from "./quick-roll.mjs";
 
@@ -25,6 +28,28 @@ const sequenceRng = (values) => {
   return () => values[index++ % values.length];
 };
 
+function createAssetRoot() {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "randomhd2-assets-"));
+  const files = [
+    "assets/wiki/factions/Automaton_Icon.svg",
+    "assets/wiki/stratagems/eagle.svg",
+    "assets/wiki/stratagems/laser.svg",
+    "assets/wiki/stratagems/supply.svg",
+    "assets/wiki/stratagems/sentry.svg",
+    "assets/wiki/weapons/liberator.svg",
+    "assets/wiki/weapons/redeemer.svg",
+    "assets/wiki/weapons/impact.svg",
+  ];
+
+  for (const file of files) {
+    const fullPath = path.join(root, file);
+    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+    fs.writeFileSync(fullPath, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10" fill="#fff"/></svg>');
+  }
+
+  return root;
+}
+
 describe("quick roll API text", () => {
   it("formats one quick loadout for QQ messages", () => {
     const text = createQuickRollText(catalog, sequenceRng([0.9, 0, 0, 0, 0, 0, 0]));
@@ -51,8 +76,17 @@ describe("quick roll API text", () => {
     expect(svg).not.toContain("Mission Stratagem");
   });
 
+  it("inlines local asset icons into the SVG image card", () => {
+    const assetRoot = createAssetRoot();
+    const svg = createQuickRollSvg(catalog, "https://example.test", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+
+    expect(svg).toContain("data:image/svg+xml;base64,");
+    expect(svg).not.toContain("https://example.test/assets/wiki/stratagems/eagle.svg");
+  });
+
   it("renders one quick loadout as a PNG image card", async () => {
-    const png = await createQuickRollPng(catalog, "https://example.test", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]));
+    const assetRoot = createAssetRoot();
+    const png = await createQuickRollPng(catalog, "https://example.test", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
 
     expect(Buffer.isBuffer(png)).toBe(true);
     expect([...png.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);

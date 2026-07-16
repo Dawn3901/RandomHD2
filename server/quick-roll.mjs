@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import sharp from "sharp";
 
 const defaultRng = () => Math.random();
@@ -18,6 +21,32 @@ function absoluteAssetUrl(publicBaseUrl, icon) {
   if (!icon) return "";
   if (/^https?:\/\//i.test(icon)) return icon;
   return `${publicBaseUrl.replace(/\/$/, "")}${icon.startsWith("/") ? icon : `/${icon}`}`;
+}
+
+function iconDataUri(icon, assetRoot) {
+  if (!assetRoot || !icon || /^https?:\/\//i.test(icon)) return "";
+
+  const normalizedIcon = icon.replace(/^\/+/, "");
+  const resolved = path.resolve(assetRoot, normalizedIcon);
+  const resolvedRoot = path.resolve(assetRoot);
+  if (!resolved.startsWith(resolvedRoot) || !fs.existsSync(resolved)) return "";
+
+  const ext = path.extname(resolved).toLowerCase();
+  const mimeType =
+    ext === ".svg"
+      ? "image/svg+xml"
+      : ext === ".png"
+        ? "image/png"
+        : ext === ".jpg" || ext === ".jpeg"
+          ? "image/jpeg"
+          : "";
+  if (!mimeType) return "";
+
+  return `data:${mimeType};base64,${fs.readFileSync(resolved).toString("base64")}`;
+}
+
+function iconHref(publicBaseUrl, icon, assetRoot) {
+  return iconDataUri(icon, assetRoot) || absoluteAssetUrl(publicBaseUrl, icon);
 }
 
 function kindColor(kind) {
@@ -89,7 +118,8 @@ export function createQuickRollText(catalog, rng = defaultRng) {
   return formatQuickRollText(createQuickRoll(catalog, rng));
 }
 
-export function formatQuickRollSvg(roll, publicBaseUrl = "") {
+export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
+  const assetRoot = options.assetRoot || "";
   const itemRows = [
     ...roll.stratagems.map((item, index) => ({
       label: `${index + 1}. ${itemLabel(item)}`,
@@ -123,7 +153,7 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "") {
 
   const rows = itemRows
     .map((item) => {
-      const iconUrl = absoluteAssetUrl(publicBaseUrl, item.icon);
+      const iconUrl = iconHref(publicBaseUrl, item.icon, assetRoot);
       const icon = iconUrl
         ? `<image href="${escapeXml(iconUrl)}" x="${item.x + 14}" y="${item.y + 14}" width="58" height="58" preserveAspectRatio="xMidYMid meet"/>`
         : "";
@@ -138,7 +168,7 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "") {
     })
     .join("");
 
-  const factionIcon = absoluteAssetUrl(publicBaseUrl, roll.faction.icon);
+  const factionIcon = iconHref(publicBaseUrl, roll.faction.icon, assetRoot);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="760" viewBox="0 0 800 760">
@@ -166,11 +196,11 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "") {
 </svg>`;
 }
 
-export function createQuickRollSvg(catalog, publicBaseUrl = "", rng = defaultRng) {
-  return formatQuickRollSvg(createQuickRoll(catalog, rng), publicBaseUrl);
+export function createQuickRollSvg(catalog, publicBaseUrl = "", rng = defaultRng, options = {}) {
+  return formatQuickRollSvg(createQuickRoll(catalog, rng), publicBaseUrl, options);
 }
 
-export async function createQuickRollPng(catalog, publicBaseUrl = "", rng = defaultRng) {
-  const svg = createQuickRollSvg(catalog, publicBaseUrl, rng);
+export async function createQuickRollPng(catalog, publicBaseUrl = "", rng = defaultRng, options = {}) {
+  const svg = createQuickRollSvg(catalog, publicBaseUrl, rng, options);
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
