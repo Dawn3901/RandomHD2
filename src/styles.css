@@ -350,6 +350,12 @@ label {
   overflow-wrap: anywhere;
 }
 
+.drawSetName {
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
 .historyMeta {
   display: grid;
   gap: 4px;

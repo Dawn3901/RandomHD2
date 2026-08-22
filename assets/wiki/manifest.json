@@ -1056,6 +1056,22 @@
         "size":  2481
     },
     {
+    "category":  "stratagems",
+    "title":  "File:Meltagun Stratagem Icon Background.svg",
+    "aliases":  [
+                    "File:Meltagun Stratagem Icon Background.svg"
+                ],
+    "file":  "assets/wiki/stratagems/Meltagun_Stratagem_Icon_Background.svg",
+    "sourceUrl":  "https://helldivers.wiki.gg/images/Meltagun_Stratagem_Icon_Background.svg",
+    "descriptionUrls":  [
+                            "https://helldivers.wiki.gg/wiki/File:Meltagun_Stratagem_Icon_Background.svg"
+                        ],
+    "mime":  "image/svg+xml",
+    "width":  512,
+    "height":  512,
+    "size":  9094
+    },
+    {
         "category":  "stratagems",
         "title":  "File:Mortar Sentry Stratagem Icon Background.svg",
         "aliases":  [

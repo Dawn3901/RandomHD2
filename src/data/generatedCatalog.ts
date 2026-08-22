@@ -518,6 +518,15 @@ export const stratagems = [
     "enabled": true
   },
   {
+    "id": "meltagun",
+    "nameEn": "Meltagun",
+    "kind": "blue",
+    "category": "蓝色战备",
+    "icon": "/assets/wiki/stratagems/Meltagun_Stratagem_Icon_Background.svg",
+    "selectable": true,
+    "enabled": true
+  },
+  {
     "id": "one-true-flag",
     "nameEn": "One True Flag",
     "kind": "blue",
