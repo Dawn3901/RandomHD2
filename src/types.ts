@@ -54,6 +54,7 @@ export type StratagemSet = {
   ownerName: string;
   name: string;
   stratagemIds: [string, string, string, string];
+  lastDrawnAt?: number;
 };
 
 export type SquadDrawResult = {

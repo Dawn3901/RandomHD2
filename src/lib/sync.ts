@@ -45,5 +45,6 @@ export function historyEntryToSet(entry: DrawHistoryEntry, now = Date.now()): St
     ...entry.set,
     id: `set-from-history-${now}-${entry.id}`,
     name: `${entry.set.name} 复用`,
+    lastDrawnAt: undefined,
   };
 }

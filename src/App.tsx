@@ -23,6 +23,7 @@ const STORAGE_KEYS = {
   sets: "randomhd2.stratagemSets",
   lastRoll: "randomhd2.lastRoll",
   history: "randomhd2.drawHistory",
+  squadCooldownHours: "randomhd2.squadCooldownHours",
 };
 
 const randomizableStratagems = getRandomizableStratagems(catalog.stratagems);
@@ -131,6 +132,9 @@ export default function App() {
     loadJson(window.localStorage, STORAGE_KEYS.history, []),
   );
   const [squadError, setSquadError] = useState("");
+  const [squadCooldownHours, setSquadCooldownHours] = useState<number>(() =>
+    loadJson(window.localStorage, STORAGE_KEYS.squadCooldownHours, 72),
+  );
   const [browserTab, setBrowserTab] = useState<"stratagems" | "weapons" | "grenades">("stratagems");
   const [query, setQuery] = useState("");
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
@@ -145,6 +149,10 @@ export default function App() {
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.sets, sets), [sets]);
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.lastRoll, quickRoll), [quickRoll]);
   useEffect(() => saveJson(window.localStorage, STORAGE_KEYS.history, history), [history]);
+  useEffect(
+    () => saveJson(window.localStorage, STORAGE_KEYS.squadCooldownHours, squadCooldownHours),
+    [squadCooldownHours],
+  );
   useEffect(() => {
     if (!players.some((player) => player.name === setOwner)) {
       setSetOwner(players[0]?.name || "玩家 1");
@@ -318,13 +326,31 @@ export default function App() {
 
   const drawSquad = () => {
     try {
-      const results = drawSquadSets(players, sets);
+      const results = drawSquadSets(players, sets, undefined, {
+        cooldownMs: squadCooldownHours * 60 * 60 * 1000,
+      });
+      const drawnIds = new Set(results.map((result) => result.set.id));
+      const nextSets = sets.map((set) =>
+        drawnIds.has(set.id) ? { ...set, lastDrawnAt: Date.now() } : set,
+      );
+      setSets(nextSets);
       setSquadResults(results);
-      sendSyncPatch({ squadResults: results });
+      sendSyncPatch({ sets: nextSets, squadResults: results });
       setSquadError("");
     } catch (error) {
       setSquadError(error instanceof Error ? error.message : "抽取失败");
     }
+  };
+
+  const resetSquadCooldown = () => {
+    const nextSets = sets.map((set) => {
+      const next = { ...set };
+      delete next.lastDrawnAt;
+      return next;
+    });
+    setSets(nextSets);
+    sendSyncPatch({ sets: nextSets });
+    setSquadError("");
   };
 
   const removeSet = (id: string) => {
@@ -401,10 +427,13 @@ export default function App() {
               <span className="eyebrow">SQUAD POOL</span>
               <h2>多人战备池</h2>
             </div>
-            <button className="primary" onClick={drawSquad}>抽取</button>
+            <div className="actions">
+              <button className="primary" onClick={drawSquad}>抽取</button>
+              <button onClick={resetSquadCooldown}>重置冷却</button>
+            </div>
           </div>
 
-          <div className="fieldRow">
+          <div className="fieldRow two">
             <label>
               玩家人数
               <select value={players.length} onChange={(event) => updatePlayerCount(Number(event.target.value))}>
@@ -412,6 +441,19 @@ export default function App() {
                 <option value={3}>3 人</option>
                 <option value={4}>4 人</option>
               </select>
+            </label>
+            <label>
+              重复冷却（小时）
+              <input
+                type="number"
+                min={0}
+                step={1}
+                value={squadCooldownHours}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  setSquadCooldownHours(Number.isFinite(value) ? Math.max(0, value) : 0);
+                }}
+              />
             </label>
           </div>
 

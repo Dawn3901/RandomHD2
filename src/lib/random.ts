@@ -64,6 +64,7 @@ export function drawSquadSets(
   players: Player[],
   pool: StratagemSet[],
   rng: Rng = defaultRng,
+  options: { now?: number; cooldownMs?: number; minWeight?: number } = {},
 ): SquadDrawResult[] {
   if (players.length < 2 || players.length > 4) {
     throw new Error("玩家人数必须为 2-4 人");
@@ -72,9 +73,33 @@ export function drawSquadSets(
     throw new Error("战备组合池数量少于玩家数");
   }
 
-  const sets = pickManyUnique(pool, players.length, rng);
+  const { now = Date.now(), cooldownMs = DEFAULT_SQUAD_COOLDOWN_MS, minWeight = DEFAULT_SQUAD_MIN_WEIGHT } = options;
+
+  // 加权不放回抽样：key = rng() ** (1 / weight)，取 key 最大的前 N 个
+  const weighted = pool.map((set) => ({
+    set,
+    key: Math.pow(rng(), 1 / squadSetWeight(set, now, cooldownMs, minWeight)),
+  }));
+  weighted.sort((a, b) => b.key - a.key);
+  const sets = weighted.slice(0, players.length).map((item) => item.set);
+
   return players.map((player, index) => ({
     playerName: player.name.trim() || `玩家 ${index + 1}`,
     set: sets[index],
   }));
+}
+
+export const DEFAULT_SQUAD_COOLDOWN_MS = 72 * 60 * 60 * 1000;
+export const DEFAULT_SQUAD_MIN_WEIGHT = 0.1;
+
+export function squadSetWeight(
+  set: StratagemSet,
+  now: number,
+  cooldownMs: number = DEFAULT_SQUAD_COOLDOWN_MS,
+  minWeight: number = DEFAULT_SQUAD_MIN_WEIGHT,
+): number {
+  if (set.lastDrawnAt === undefined) return 1;
+  const elapsed = Math.max(0, now - set.lastDrawnAt);
+  if (elapsed >= cooldownMs) return 1;
+  return minWeight + (1 - minWeight) * (elapsed / cooldownMs);
 }

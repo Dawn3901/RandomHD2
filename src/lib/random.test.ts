@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Catalog, Player, StratagemSet } from "../types";
-import { drawSquadSets, pickManyUnique, pickOne, rollQuickLoadout } from "./random";
+import { drawSquadSets, pickManyUnique, pickOne, rollQuickLoadout, squadSetWeight } from "./random";
 
 const sequenceRng = (values: number[]) => {
   let index = 0;
@@ -75,5 +75,35 @@ describe("random helpers", () => {
     expect(results).toHaveLength(2);
     expect(results.map((item) => item.playerName)).toEqual(["Dawn", "Friend"]);
     expect(new Set(results.map((item) => item.set.id)).size).toBe(2);
+  });
+
+  it("computes squad set weight from the last draw time", () => {
+    const now = 1_000_000;
+    const cooldownMs = 72 * 60 * 60 * 1000;
+    const base = { ownerName: "Dawn", name: "A", stratagemIds: ["s1", "s2", "s3", "s4"] as [string, string, string, string] };
+
+    expect(squadSetWeight({ id: "never", ...base }, now, cooldownMs)).toBe(1);
+    expect(squadSetWeight({ id: "just", ...base, lastDrawnAt: now }, now, cooldownMs)).toBeCloseTo(0.1, 5);
+    expect(squadSetWeight({ id: "mid", ...base, lastDrawnAt: now - cooldownMs / 2 }, now, cooldownMs)).toBeCloseTo(0.55, 5);
+    expect(squadSetWeight({ id: "expired", ...base, lastDrawnAt: now - cooldownMs }, now, cooldownMs)).toBe(1);
+  });
+
+  it("reduces the chance of re-drawing a recently drawn set", () => {
+    const players: Player[] = [
+      { id: "p1", name: "Dawn" },
+      { id: "p2", name: "Friend" },
+    ];
+    const now = 1_000_000;
+    const cooldownMs = 72 * 60 * 60 * 1000;
+    const pool: StratagemSet[] = [
+      { id: "set1", ownerName: "Dawn", name: "A", stratagemIds: ["s1", "s2", "s3", "s4"] },
+      { id: "set2", ownerName: "Friend", name: "B", stratagemIds: ["s2", "s3", "s4", "s5"] },
+      { id: "set3", ownerName: "Dawn", name: "C", stratagemIds: ["s1", "s3", "s4", "s5"], lastDrawnAt: now },
+    ];
+
+    // 固定 rng 0.5：全权重的 key = 0.5，刚抽过的（权重 0.1）key ≈ 0.5^10，远小于其余两组
+    const results = drawSquadSets(players, pool, () => 0.5, { now, cooldownMs });
+
+    expect(results.map((item) => item.set.id)).toEqual(["set1", "set2"]);
   });
 });
