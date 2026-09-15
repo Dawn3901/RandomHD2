@@ -46,17 +46,33 @@ const stratagemKindFromSvg = (file) => {
   return "blue";
 };
 
+// 只复制 manifest 里登记过的文件：目录里可能存在没登记的遗留文件（例如手动另存下来的缩略图），
+// 整目录复制会把它们一起带进构建产物。
 const copyAssets = () => {
-  fs.mkdirSync(publicAssetsDir, { recursive: true });
+  let copied = 0;
+  let missing = 0;
+
   for (const category of ["factions", "stratagems", "weapons"]) {
-    const from = path.join(root, "assets", "wiki", category);
-    const to = path.join(publicAssetsDir, category);
-    fs.mkdirSync(to, { recursive: true });
-    for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
-      if (!entry.isFile()) continue;
-      fs.copyFileSync(path.join(from, entry.name), path.join(to, entry.name));
-    }
+    fs.rmSync(path.join(publicAssetsDir, category), { recursive: true, force: true });
   }
+  fs.mkdirSync(publicAssetsDir, { recursive: true });
+
+  for (const item of manifest) {
+    const from = path.join(root, item.file);
+    if (!fs.existsSync(from)) {
+      missing += 1;
+      continue;
+    }
+    const to = path.join(root, "public", item.file.replace(/^assets\/wiki\//, "assets/wiki/"));
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.copyFileSync(from, to);
+    copied += 1;
+  }
+
+  if (missing > 0) {
+    console.warn(`警告：manifest 中有 ${missing} 个文件在 assets/wiki 下不存在，已跳过`);
+  }
+  return copied;
 };
 
 const byCategory = (category) => manifest.filter((item) => item.category === category);

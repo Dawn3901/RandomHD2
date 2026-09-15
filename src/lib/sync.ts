@@ -1,4 +1,4 @@
-import type { DrawHistoryEntry, Player, StratagemSet, SyncPatch, SyncState } from "../types";
+import type { CustomItem, DrawHistoryEntry, Player, StratagemSet, SyncPatch, SyncState } from "../types";
 
 export function createSyncState(players: Player[], now = Date.now()): SyncState {
   return {
@@ -6,6 +6,7 @@ export function createSyncState(players: Player[], now = Date.now()): SyncState 
     sets: [],
     squadResults: [],
     history: [],
+    customItems: [],
     updatedAt: now,
   };
 }
@@ -16,6 +17,7 @@ export function applySyncPatch(state: SyncState, patch: SyncPatch, now = Date.no
     sets: patch.sets ? [...patch.sets] : [...state.sets],
     squadResults: patch.squadResults ? [...patch.squadResults] : [...state.squadResults],
     history: patch.history ? [...patch.history] : [...state.history],
+    customItems: patch.customItems ? ([...patch.customItems] as CustomItem[]) : [...state.customItems],
     updatedAt: now,
   };
 }

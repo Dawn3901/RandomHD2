@@ -15,4 +15,13 @@ describe("storage helpers", () => {
 
     expect(loadJson(storage, "players", [])).toEqual([{ id: "p1", name: "Dawn" }]);
   });
+
+  it("does not throw when the write fails", () => {
+    const storage = createMemoryStorage();
+    storage.setItem = () => {
+      throw new Error("QuotaExceededError");
+    };
+
+    expect(() => saveJson(storage, "custom", [{ id: "custom-1" }])).not.toThrow();
+  });
 });

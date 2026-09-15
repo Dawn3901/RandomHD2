@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DrawHistoryEntry, Player, StratagemSet, SquadDrawResult, SyncState } from "../types";
+import type { CustomItem, DrawHistoryEntry, Player, StratagemSet, SquadDrawResult, SyncState } from "../types";
 import {
   applySyncPatch,
   createSyncState,
@@ -18,6 +18,16 @@ const set: StratagemSet = {
   ownerName: "玩家 1",
   name: "测试组合",
   stratagemIds: ["a", "b", "c", "d"],
+};
+
+const customItem: CustomItem = {
+  id: "custom-1",
+  kind: "stratagem",
+  nameEn: "Meltagun",
+  stratagemKind: "blue",
+  category: "蓝色战备",
+  svg: "<svg/>",
+  createdAt: 120,
 };
 
 const result: SquadDrawResult = {
@@ -39,25 +49,40 @@ describe("sync state helpers", () => {
       sets: [],
       squadResults: [],
       history: [],
+      customItems: [],
       updatedAt: 100,
     });
   });
 
   it("applies shared state patches without mutating the previous state", () => {
     const state: SyncState = createSyncState(players, 100);
-    const next = applySyncPatch(state, { sets: [set], squadResults: [result], history: [historyEntry] }, 200);
+    const next = applySyncPatch(
+      state,
+      { sets: [set], squadResults: [result], history: [historyEntry], customItems: [customItem] },
+      200,
+    );
 
     expect(next).toEqual({
       players,
       sets: [set],
       squadResults: [result],
       history: [historyEntry],
+      customItems: [customItem],
       updatedAt: 200,
     });
     expect(state.sets).toEqual([]);
     expect(state.history).toEqual([]);
+    expect(state.customItems).toEqual([]);
     expect(next.sets).not.toBe(state.sets);
-    expect(next.history).not.toBe(state.history);
+    expect(next.customItems).not.toBe(state.customItems);
+  });
+
+  it("keeps existing custom items when a patch omits them", () => {
+    const state: SyncState = applySyncPatch(createSyncState(players, 100), { customItems: [customItem] }, 200);
+    const next = applySyncPatch(state, { sets: [set] }, 300);
+
+    expect(next.customItems).toEqual([customItem]);
+    expect(next.sets).toEqual([set]);
   });
 
   it("records a created set at the front of history", () => {

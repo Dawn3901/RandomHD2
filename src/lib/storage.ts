@@ -10,7 +10,11 @@ export function loadJson<T>(storage: Pick<Storage, "getItem">, key: string, fall
 }
 
 export function saveJson<T>(storage: Pick<Storage, "setItem">, key: string, value: T): void {
-  storage.setItem(key, JSON.stringify(value));
+  try {
+    storage.setItem(key, JSON.stringify(value));
+  } catch {
+    // 写入失败（配额超限、隐私模式等）不应让页面崩溃，本次变更只保留在内存里
+  }
 }
 
 export function createMemoryStorage(seed: Record<string, string> = {}): Storage {

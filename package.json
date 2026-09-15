@@ -9,7 +9,8 @@
     "test": "vitest run",
     "generate:data": "node scripts/generate-data.mjs",
     "sync": "npm run generate:data && node server/sync-server.mjs",
-    "share": "npm run build && node server/sync-server.mjs --host 0.0.0.0 --port 5173"
+    "share": "npm run build && node server/sync-server.mjs --host 0.0.0.0 --port 5173",
+    "update:assets": "node scripts/update-assets.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",

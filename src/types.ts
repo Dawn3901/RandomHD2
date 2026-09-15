@@ -57,6 +57,24 @@ export type StratagemSet = {
   lastDrawnAt?: number;
 };
 
+export type CustomItemKind = "stratagem" | "weapon";
+
+export type CustomItem = {
+  id: string;
+  kind: CustomItemKind;
+  nameEn: string;
+  nameZh?: string;
+  stratagemKind?: Stratagem["kind"];
+  slot?: Weapon["slot"];
+  category: string;
+  /** 省略视为 svg */
+  format?: "svg" | "png";
+  /** 图标源数据：format 为 svg 时是 SVG 文本，为 png 时是 base64 */
+  svg: string;
+  createdAt: number;
+  deletedAt?: number;
+};
+
 export type SquadDrawResult = {
   playerName: string;
   set: StratagemSet;
@@ -74,10 +92,23 @@ export type SyncState = {
   sets: StratagemSet[];
   squadResults: SquadDrawResult[];
   history: DrawHistoryEntry[];
+  customItems: CustomItem[];
   updatedAt: number;
 };
 
-export type SyncPatch = Partial<Pick<SyncState, "players" | "sets" | "squadResults" | "history">>;
+export type SyncPatch = Partial<Pick<SyncState, "players" | "sets" | "squadResults" | "history" | "customItems">>;
+
+/** 服务端 /api/wiki/updates 返回的 Wiki 图标条目 */
+export type WikiAssetItem = {
+  title: string;
+  nameEn: string;
+  category: "factions" | "stratagems" | "weapons";
+  slot: Weapon["slot"] | null;
+  mime: string;
+  size: number;
+  known: boolean;
+  suggestedKind: Stratagem["kind"] | null;
+};
 
 export type ServerSyncMessage =
   | { type: "state"; state: SyncState }
