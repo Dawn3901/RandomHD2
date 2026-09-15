@@ -65,6 +65,9 @@ const defaultPlayers: Player[] = [
 const NEED_SERVER_MESSAGE =
   "无法读取 Wiki 清单：没有连上随机服务。npm run dev 只有前端，请改用 npm run share 启动（或部署到 Docker 后访问）。";
 
+const APP_VERSION = typeof __APP_VERSION__ === "string" ? __APP_VERSION__ : "0.0.0";
+const BUILD_TIME = typeof __BUILD_TIME__ === "string" ? __BUILD_TIME__ : "";
+
 function itemLabel(item: { nameZh?: string; nameEn: string }) {
   return item.nameZh || item.nameEn;
 }
@@ -76,6 +79,21 @@ function formatHistoryTime(timestamp: number) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(timestamp));
+}
+
+/** 构建时间以 ISO 注入，这里按访问者本地时区显示 */
+function formatBuildTime(iso: string) {
+  if (!iso) return "未知";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "未知";
+
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 }
 
 function AssetIcon({ src, alt }: { src: string; alt: string }) {
@@ -1137,6 +1155,11 @@ export default function App() {
           )}
         </div>
       </section>
+
+      <footer className="appFooter">
+        <span>{`RandomHD2 v${APP_VERSION}`}</span>
+        <span>{`更新于 ${formatBuildTime(BUILD_TIME)}`}</span>
+      </footer>
     </main>
   );
 }

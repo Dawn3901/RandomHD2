@@ -607,6 +607,20 @@ input[type="file"]::file-selector-button:hover {
   font-size: 11px;
 }
 
+.appFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 620px) {
   .uploadFooter {
     display: grid;

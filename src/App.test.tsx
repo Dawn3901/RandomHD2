@@ -64,4 +64,19 @@ describe("App rendering", () => {
     expect(html).not.toContain("data:image/svg+xml;charset=utf-8,");
     expect(html).toContain("所有自定义图标都已删除");
   });
+
+  it("renders a footer with the injected version and build time", () => {
+    const html = render();
+
+    expect(html).toContain('class="appFooter"');
+    expect(html).toContain(`RandomHD2 v${__APP_VERSION__}`);
+    expect(html).toMatch(/更新于 \d{4}\/\d{2}\/\d{2}/);
+    expect(html).not.toContain("undefined");
+  });
+
+  it("keeps the footer as the last element on the page", () => {
+    const html = render();
+
+    expect(html.trimEnd().endsWith("</footer></main>")).toBe(true);
+  });
 });
