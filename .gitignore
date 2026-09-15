@@ -6,6 +6,10 @@ dist/
 vite.config.js
 vite.config.d.ts
 
+# Docker 部署时挂载出来的状态目录，含玩家数据，绝不入库
+data/
+data.bak/
+
 # 由 npm run generate:data 生成的产物，不入库
 src/data/generatedCatalog.ts
 server/generated-catalog.json
