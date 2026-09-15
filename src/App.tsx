@@ -62,6 +62,9 @@ const defaultPlayers: Player[] = [
   { id: "player-2", name: "玩家 2" },
 ];
 
+const NEED_SERVER_MESSAGE =
+  "无法读取 Wiki 清单：没有连上随机服务。npm run dev 只有前端，请改用 npm run share 启动（或部署到 Docker 后访问）。";
+
 function itemLabel(item: { nameZh?: string; nameEn: string }) {
   return item.nameZh || item.nameEn;
 }
@@ -428,14 +431,26 @@ export default function App() {
   const loadWikiUpdates = async () => {
     setWikiLoading(true);
     setWikiError("");
+
     try {
       const response = await fetch("/api/wiki/updates");
-      const payload = (await response.json()) as { items?: WikiAssetItem[]; error?: string; hint?: string };
+      const text = await response.text();
+
+      let payload: { items?: WikiAssetItem[]; error?: string; hint?: string };
+      try {
+        payload = JSON.parse(text) as typeof payload;
+      } catch {
+        // npm run dev 只有前端：未匹配的路径会被 Vite 当成页面返回 HTML
+        throw new Error(NEED_SERVER_MESSAGE);
+      }
+
       if (!response.ok) throw new Error([payload.error, payload.hint].filter(Boolean).join(" "));
       setWikiItems(payload.items ?? []);
     } catch (error) {
       setWikiItems(null);
-      setWikiError(error instanceof Error ? error.message : "读取 Wiki 清单失败");
+      const message = error instanceof Error ? error.message : "";
+      const isNetworkError = !message || /failed to fetch|networkerror|load failed/i.test(message);
+      setWikiError(isNetworkError ? NEED_SERVER_MESSAGE : message);
     } finally {
       setWikiLoading(false);
     }
@@ -953,7 +968,10 @@ export default function App() {
 
             {wikiItems !== null && wikiVisibleItems.length === 0 && !wikiLoading && (
               <div className="emptyLine">
-                {wikiShowAll ? "Wiki 上没有可用图标。" : "Wiki 上没有新内容，内置目录已是最新。"}
+                {wikiShowAll
+                  ? "Wiki 上没有可用图标。"
+                  : `Wiki 上共 ${wikiItems.length} 个图标，都已在内置目录里（用 npm run update:assets 同步的）。`
+                    + "想重复导入某个图标，勾选右上角「显示已导入」。"}
               </div>
             )}
 
