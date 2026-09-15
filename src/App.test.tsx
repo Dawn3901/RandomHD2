@@ -61,7 +61,8 @@ describe("App rendering", () => {
     const html = render({ "randomhd2.customItems": JSON.stringify([deleted]) });
 
     expect(html).not.toContain("测试隐藏战备");
-    expect(html).not.toContain("data:image/svg+xml;charset=utf-8,");
+    // 用这个图标自身的编码内容判断，避免误伤页面上其他 data uri 图标（例如颜色占位图标）
+    expect(html).not.toContain(encodeURIComponent(SVG));
     expect(html).toContain("所有自定义图标都已删除");
   });
 
@@ -107,5 +108,17 @@ describe("App rendering", () => {
     expect(html).toContain("0/4 已选择");
     expect(html).toContain("从下方网格里挑 4 个战备");
     expect(html).not.toContain("保存修改");
+  });
+
+  it("offers the three colour placeholders in the picker only", () => {
+    const html = render();
+
+    // 只出现在组合选择器里：若漏进随机池的可选列表，出现次数会变成 2
+    for (const label of ["任意红色战备", "任意蓝色战备", "任意绿色战备"]) {
+      expect((html.match(new RegExp(label, "g")) || []).length).toBe(1);
+    }
+    // 选择器里有虚线框标记，随机池的目录卡片里没有
+    expect(html).toContain("wildcard");
+    expect(html).toContain("不会进入随机池");
   });
 });

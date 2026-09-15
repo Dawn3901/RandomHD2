@@ -29,7 +29,9 @@ import {
 } from "./lib/customItems";
 import { drawSquadSets, rollQuickLoadout } from "./lib/random";
 import { loadJson, saveJson } from "./lib/storage";
+import { MAX_SET_STRATAGEMS, addToSelection, removeFromSelectionAt, selectionCount } from "./lib/selection";
 import { groupSetsByOwner, historyEntryToSet, recordCreatedSetHistory, removeHistoryEntry, updateSetInList } from "./lib/sync";
+import { WILDCARD_STRATAGEMS, isWildcardStratagem } from "./lib/wildcards";
 import { getRandomizableStratagems } from "./lib/stratagems";
 import type {
   ClientSyncMessage,
@@ -600,9 +602,18 @@ export default function App() {
   const toggleStratagemInSet = (id: string) => {
     setSelectedStratagemIds((current) => {
       if (current.includes(id)) return current.filter((item) => item !== id);
-      if (current.length >= 4) return current;
+      if (current.length >= MAX_SET_STRATAGEMS) return current;
       return [...current, id];
     });
+  };
+
+  /** 占位图标可以重复添加（例如 2 个指定战备 + 2 个任意红色战备） */
+  const addStratagemToSet = (id: string) => {
+    setSelectedStratagemIds((current) => addToSelection(current, id, true));
+  };
+
+  const removeSelectedAt = (index: number) => {
+    setSelectedStratagemIds((current) => removeFromSelectionAt(current, index));
   };
 
   const expandOwner = (ownerName: string) => {
@@ -739,8 +750,14 @@ export default function App() {
   };
 
   const stratagemById = useMemo(
-    () => new Map(mergedCatalog.stratagems.map((item) => [item.id, item])),
+    () => new Map([...WILDCARD_STRATAGEMS, ...mergedCatalog.stratagems].map((item) => [item.id, item])),
     [mergedCatalog],
+  );
+
+  // 组合选择器里额外提供三个颜色占位项；随机池仍只用 randomizableStratagems
+  const pickerStratagems = useMemo(
+    () => [...WILDCARD_STRATAGEMS, ...randomizableStratagems],
+    [randomizableStratagems],
   );
 
   const setGroups = useMemo(
@@ -847,9 +864,10 @@ export default function App() {
                 <strong className="drawPlayerName">{result.playerName}</strong>
                 <span className="drawSetName">{result.set.name}</span>
                 <div className="iconStrip">
-                  {result.set.stratagemIds.map((id) => {
+                  {result.set.stratagemIds.map((id, index) => {
                     const item = stratagemById.get(id);
-                    return item ? <AssetIcon key={id} src={item.icon} alt={itemLabel(item)} /> : null;
+                    // 组合里允许重复的占位图标，所以 key 需要带索引
+                    return item ? <AssetIcon key={`${id}-${index}`} src={item.icon} alt={itemLabel(item)} /> : null;
                   })}
                 </div>
               </div>
@@ -875,9 +893,9 @@ export default function App() {
                     </span>
                   </div>
                   <div className="iconStrip">
-                    {entry.set.stratagemIds.map((id) => {
+                    {entry.set.stratagemIds.map((id, index) => {
                       const item = stratagemById.get(id);
-                      return item ? <AssetIcon key={id} src={item.icon} alt={itemLabel(item)} /> : null;
+                      return item ? <AssetIcon key={`${id}-${index}`} src={item.icon} alt={itemLabel(item)} /> : null;
                     })}
                   </div>
                   <div className="historyActions">
@@ -933,13 +951,13 @@ export default function App() {
           <div className="selectedStrip">
             <span className="selectedCount">{`${selectedStratagemIds.length}/4 已选择`}</span>
             <div className="selectedIcons">
-              {selectedStratagemIds.map((id) => {
+              {selectedStratagemIds.map((id, index) => {
                 const item = stratagemById.get(id);
                 return (
                   <button
-                    key={id}
+                    key={`${id}-${index}`}
                     className="selectedChip"
-                    onClick={() => toggleStratagemInSet(id)}
+                    onClick={() => removeSelectedAt(index)}
                     title={item ? `移除「${itemLabel(item)}」` : "移除这个已失效的战备"}
                   >
                     {item ? <img src={item.icon} alt="" loading="lazy" /> : <span className="missingIcon">?</span>}
@@ -951,17 +969,30 @@ export default function App() {
             </div>
           </div>
 
+          <p className="panelHint">
+            带虚线框的三个图标是「任意颜色战备」占位，用来表示这一格可以是任意红 / 蓝 / 绿色战备。
+            它们只用于组合，不会进入随机池、也不会被「全部随机」抽到。
+            <strong>占位图标可以重复选</strong>，例如 2 个指定战备 + 2 个任意颜色战备；
+            要减少数量请点上方已选栏里的 ×。
+          </p>
+
           <div className="selectGrid">
-            {randomizableStratagems.map((item) => (
-              <button
-                key={item.id}
-                className={selectedStratagemIds.includes(item.id) ? "iconChoice selected" : "iconChoice"}
-                onClick={() => toggleStratagemInSet(item.id)}
-                title={itemLabel(item)}
-              >
-                <img src={item.icon} alt="" loading="lazy" />
-              </button>
-            ))}
+            {pickerStratagems.map((item) => {
+              const selected = selectedStratagemIds.includes(item.id);
+              const wildcard = isWildcardStratagem(item.id);
+              const used = wildcard ? selectionCount(selectedStratagemIds, item.id) : 0;
+              return (
+                <button
+                  key={item.id}
+                  className={`iconChoice${selected ? " selected" : ""}${wildcard ? " wildcard" : ""}`}
+                  onClick={() => (wildcard ? addStratagemToSet(item.id) : toggleStratagemInSet(item.id))}
+                  title={wildcard ? `${itemLabel(item)}（可重复选）` : itemLabel(item)}
+                >
+                  <img src={item.icon} alt="" loading="lazy" />
+                  {used > 1 && <em className="choiceBadge">{`×${used}`}</em>}
+                </button>
+              );
+            })}
           </div>
 
           <div className="poolList">
@@ -989,9 +1020,9 @@ export default function App() {
                           <div className="poolItemMain">
                             <strong>{set.name}</strong>
                             <div className="iconStrip compact">
-                              {set.stratagemIds.map((id) => {
+                              {set.stratagemIds.map((id, index) => {
                                 const item = stratagemById.get(id);
-                                return item ? <AssetIcon key={id} src={item.icon} alt={itemLabel(item)} /> : null;
+                                return item ? <AssetIcon key={`${id}-${index}`} src={item.icon} alt={itemLabel(item)} /> : null;
                               })}
                             </div>
                           </div>
