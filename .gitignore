@@ -5,3 +5,13 @@ dist/
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+
+# 由 npm run generate:data 生成的产物，不入库
+src/data/generatedCatalog.ts
+server/generated-catalog.json
+public/assets/
+
+# AI 助手工作流产物，不入库
+.zcode/
+.agents/
+docs/superpowers/

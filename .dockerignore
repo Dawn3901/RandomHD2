@@ -1,6 +1,11 @@
-﻿node_modules
+node_modules
 dist
 .git
 .randomhd2
 data
 *.log
+
+# 以下产物在镜像内由 npm run build 重新生成，不进入构建上下文
+public/assets
+src/data/generatedCatalog.ts
+server/generated-catalog.json

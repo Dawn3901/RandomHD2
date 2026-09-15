@@ -11,6 +11,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+# npm run build 内部会先执行 generate:data，从 assets/wiki 生成图标目录与战备数据
 RUN npm run build
 
 ENV HOST=0.0.0.0

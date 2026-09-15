@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "dev": "npm run generate:data && vite",
+    "build": "npm run generate:data && tsc --noEmit && vite build",
     "test": "vitest run",
     "generate:data": "node scripts/generate-data.mjs",
-    "sync": "node server/sync-server.mjs",
+    "sync": "npm run generate:data && node server/sync-server.mjs",
     "share": "npm run build && node server/sync-server.mjs --host 0.0.0.0 --port 5173"
   },
   "dependencies": {
