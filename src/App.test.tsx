@@ -79,4 +79,33 @@ describe("App rendering", () => {
 
     expect(html.trimEnd().endsWith("</footer></main>")).toBe(true);
   });
+
+  it("groups the set pool by owner and keeps the groups collapsed", () => {
+    const sets = [
+      { id: "set-a", ownerName: "玩家 1", name: "洞穴快乐组", stratagemIds: ["a", "b", "c", "d"] },
+      { id: "set-b", ownerName: "玩家 2", name: "全轨道组", stratagemIds: ["a", "b", "c", "d"] },
+      { id: "set-c", ownerName: "玩家 1", name: "防空组", stratagemIds: ["a", "b", "c", "d"] },
+    ];
+    const html = render({ "randomhd2.stratagemSets": JSON.stringify(sets) });
+
+    expect(html).toContain("玩家 1 的战备组");
+    expect(html).toContain("玩家 2 的战备组");
+    expect(html).toContain("2 组");
+    expect(html).toContain("1 组");
+    // 默认收起：组合名不应出现在页面里
+    expect(html).not.toContain("洞穴快乐组");
+    expect(html).not.toContain("全轨道组");
+    // 收起时也不渲染组员按钮
+    expect(html).not.toContain("编辑中");
+  });
+
+  it("shows the create panel with an empty selection strip", () => {
+    const html = render();
+
+    expect(html).toContain("创建组合");
+    expect(html).toContain("加入池子");
+    expect(html).toContain("0/4 已选择");
+    expect(html).toContain("从下方网格里挑 4 个战备");
+    expect(html).not.toContain("保存修改");
+  });
 });

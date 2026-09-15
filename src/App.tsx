@@ -29,7 +29,7 @@ import {
 } from "./lib/customItems";
 import { drawSquadSets, rollQuickLoadout } from "./lib/random";
 import { loadJson, saveJson } from "./lib/storage";
-import { historyEntryToSet, recordCreatedSetHistory, removeHistoryEntry } from "./lib/sync";
+import { groupSetsByOwner, historyEntryToSet, recordCreatedSetHistory, removeHistoryEntry, updateSetInList } from "./lib/sync";
 import { getRandomizableStratagems } from "./lib/stratagems";
 import type {
   ClientSyncMessage,
@@ -189,6 +189,9 @@ export default function App() {
   const [setName, setSetName] = useState("");
   const [setOwner, setSetOwner] = useState(players[0]?.name || "玩家 1");
   const [selectedStratagemIds, setSelectedStratagemIds] = useState<string[]>([]);
+  const [editingSetId, setEditingSetId] = useState<string | null>(null);
+  const [expandedOwners, setExpandedOwners] = useState<string[]>([]);
+  const customSetsRef = useRef<HTMLDivElement | null>(null);
   const [squadResults, setSquadResults] = useState<SquadDrawResult[]>([]);
   const [history, setHistory] = useState<DrawHistoryEntry[]>(() =>
     loadJson(window.localStorage, STORAGE_KEYS.history, []),
@@ -270,10 +273,12 @@ export default function App() {
   }, [customItems, seenCustomIds]);
 
   useEffect(() => {
+    // 编辑中的组合可能属于一个已不存在的旧玩家名，此时不要强行改掉创建者
+    if (editingSetId) return;
     if (!players.some((player) => player.name === setOwner)) {
       setSetOwner(players[0]?.name || "玩家 1");
     }
-  }, [players, setOwner]);
+  }, [players, setOwner, editingSetId]);
 
   useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
@@ -600,6 +605,16 @@ export default function App() {
     });
   };
 
+  const expandOwner = (ownerName: string) => {
+    setExpandedOwners((current) => (current.includes(ownerName) ? current : [...current, ownerName]));
+  };
+
+  const toggleOwnerExpanded = (ownerName: string) => {
+    setExpandedOwners((current) =>
+      current.includes(ownerName) ? current.filter((name) => name !== ownerName) : [...current, ownerName],
+    );
+  };
+
   const addSet = () => {
     if (selectedStratagemIds.length !== 4) return;
     const owner = setOwner.trim() || players[0]?.name || "玩家";
@@ -621,6 +636,49 @@ export default function App() {
       sendSyncPatch({ history: next });
       return next;
     });
+    expandOwner(owner);
+    setSetName("");
+    setSelectedStratagemIds([]);
+    setSquadError("");
+  };
+
+  const startEditSet = (target: StratagemSet) => {
+    setEditingSetId(target.id);
+    setSetOwner(target.ownerName);
+    setSetName(target.name);
+    setSelectedStratagemIds([...target.stratagemIds]);
+    setSquadError("");
+    expandOwner(target.ownerName);
+    customSetsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const cancelEditSet = () => {
+    setEditingSetId(null);
+    setSetName("");
+    setSelectedStratagemIds([]);
+    setSquadError("");
+  };
+
+  const saveSetEdit = () => {
+    if (!editingSetId || selectedStratagemIds.length !== 4) return;
+
+    const owner = setOwner.trim() || players[0]?.name || "玩家";
+    if (!sets.some((item) => item.id === editingSetId)) {
+      setSquadError("这个组合已经被删除了，无法保存修改");
+      cancelEditSet();
+      return;
+    }
+
+    const next = updateSetInList(sets, editingSetId, {
+      ownerName: owner,
+      name: setName.trim() || `${owner} 的战备`,
+      stratagemIds: selectedStratagemIds as [string, string, string, string],
+    });
+
+    setSets(next);
+    sendSyncPatch({ sets: next });
+    expandOwner(owner);
+    setEditingSetId(null);
     setSetName("");
     setSelectedStratagemIds([]);
     setSquadError("");
@@ -684,6 +742,19 @@ export default function App() {
     () => new Map(mergedCatalog.stratagems.map((item) => [item.id, item])),
     [mergedCatalog],
   );
+
+  const setGroups = useMemo(
+    () => groupSetsByOwner(sets, players.map((player) => player.name)),
+    [sets, players],
+  );
+
+  // 编辑中的组合若属于一个已不存在的旧玩家名，也要在下拉里保留它，否则会显示成空白
+  const ownerOptions = useMemo(() => {
+    const names = players.map((player) => player.name);
+    return names.includes(setOwner) ? names : [...names, setOwner];
+  }, [players, setOwner]);
+
+  const editingSet = editingSetId ? sets.find((item) => item.id === editingSetId) ?? null : null;
 
   return (
     <main className="appShell">
@@ -820,23 +891,36 @@ export default function App() {
           </div>
         </div>
 
-        <div className="panel">
+        <div className="panel" ref={customSetsRef}>
           <div className="sectionHead compact">
             <div>
               <span className="eyebrow">CUSTOM SETS</span>
-              <h2>创建组合</h2>
+              <h2>{editingSet ? "编辑组合" : "创建组合"}</h2>
             </div>
-            <button className="primary" disabled={selectedStratagemIds.length !== 4} onClick={addSet}>
-              加入池子
-            </button>
+            <div className="actions">
+              {editingSet && <button onClick={cancelEditSet}>取消</button>}
+              <button
+                className="primary"
+                disabled={selectedStratagemIds.length !== 4}
+                onClick={editingSet ? saveSetEdit : addSet}
+              >
+                {editingSet ? "保存修改" : "加入池子"}
+              </button>
+            </div>
           </div>
+
+          {editingSet && (
+            <p className="panelHint">
+              {`正在编辑「${editingSet.name}」。保存后立即同步给所有人，组合的抽取冷却不会被重置。`}
+            </p>
+          )}
 
           <div className="fieldRow two">
             <label>
               创建者
               <select value={setOwner} onChange={(event) => setSetOwner(event.target.value)}>
-                {players.map((player) => (
-                  <option key={player.id} value={player.name}>{player.name}</option>
+                {ownerOptions.map((name) => (
+                  <option key={name} value={name}>{name}</option>
                 ))}
               </select>
             </label>
@@ -846,7 +930,27 @@ export default function App() {
             </label>
           </div>
 
-          <div className="selectedCount">{selectedStratagemIds.length}/4 已选择</div>
+          <div className="selectedStrip">
+            <span className="selectedCount">{`${selectedStratagemIds.length}/4 已选择`}</span>
+            <div className="selectedIcons">
+              {selectedStratagemIds.map((id) => {
+                const item = stratagemById.get(id);
+                return (
+                  <button
+                    key={id}
+                    className="selectedChip"
+                    onClick={() => toggleStratagemInSet(id)}
+                    title={item ? `移除「${itemLabel(item)}」` : "移除这个已失效的战备"}
+                  >
+                    {item ? <img src={item.icon} alt="" loading="lazy" /> : <span className="missingIcon">?</span>}
+                    <em aria-hidden="true">×</em>
+                  </button>
+                );
+              })}
+              {selectedStratagemIds.length === 0 && <span className="emptyLine inline">从下方网格里挑 4 个战备</span>}
+            </div>
+          </div>
+
           <div className="selectGrid">
             {randomizableStratagems.map((item) => (
               <button
@@ -861,15 +965,49 @@ export default function App() {
           </div>
 
           <div className="poolList">
-            {sets.map((set) => (
-              <div key={set.id} className="poolItem">
-                <div>
-                  <strong>{set.name}</strong>
-                  <span>{set.ownerName}</span>
+            {setGroups.map((group) => {
+              const expanded = expandedOwners.includes(group.ownerName);
+              return (
+                <div key={group.ownerName} className="poolGroup">
+                  <button
+                    className="poolGroupHead"
+                    onClick={() => toggleOwnerExpanded(group.ownerName)}
+                    aria-expanded={expanded}
+                  >
+                    <span className="chevron" aria-hidden="true">{expanded ? "▾" : "▸"}</span>
+                    <strong>{`${group.ownerName} 的战备组`}</strong>
+                    <span>{`${group.sets.length} 组`}</span>
+                  </button>
+
+                  {expanded && (
+                    <div className="poolGroupBody">
+                      {group.sets.map((set) => (
+                        <div
+                          key={set.id}
+                          className={set.id === editingSetId ? "poolItem editing" : "poolItem"}
+                        >
+                          <div className="poolItemMain">
+                            <strong>{set.name}</strong>
+                            <div className="iconStrip compact">
+                              {set.stratagemIds.map((id) => {
+                                const item = stratagemById.get(id);
+                                return item ? <AssetIcon key={id} src={item.icon} alt={itemLabel(item)} /> : null;
+                              })}
+                            </div>
+                          </div>
+                          <div className="historyActions">
+                            <button disabled={set.id === editingSetId} onClick={() => startEditSet(set)}>
+                              {set.id === editingSetId ? "编辑中" : "编辑"}
+                            </button>
+                            <button onClick={() => removeSet(set.id)}>删除</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <button onClick={() => removeSet(set.id)}>删除</button>
-              </div>
-            ))}
+              );
+            })}
             {sets.length === 0 && <div className="emptyLine">还没有自定义组合。</div>}
           </div>
         </div>

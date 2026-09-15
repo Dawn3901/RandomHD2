@@ -377,6 +377,120 @@ label {
   gap: 8px;
 }
 
+.iconStrip.compact {
+  gap: 5px;
+}
+
+.iconStrip.compact .assetIcon {
+  width: 34px;
+  height: 34px;
+}
+
+.selectedStrip {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.selectedIcons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+
+.selectedChip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 2px;
+  border-color: var(--accent);
+}
+
+.selectedChip img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.selectedChip em {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--danger);
+  color: #0a0d0c;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.missingIcon {
+  color: var(--danger);
+  font-size: 18px;
+}
+
+.emptyLine.inline {
+  display: inline-block;
+  padding: 8px 12px;
+}
+
+.poolGroup {
+  display: grid;
+}
+
+.poolGroupHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.poolGroupHead .chevron {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.poolGroupHead strong {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.poolGroupHead span:last-child {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.poolGroupBody {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.poolItemMain {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.poolItemMain strong {
+  overflow-wrap: anywhere;
+}
+
+.poolItem.editing {
+  border-color: var(--accent);
+  background: rgba(240, 217, 78, 0.08);
+}
+
 .selectGrid {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
