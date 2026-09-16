@@ -14,6 +14,8 @@ export type Stratagem = {
   kind: "red" | "blue" | "green" | "yellow";
   category: string;
   icon: string;
+  /** 构建时生成的小图，用于只画几十像素的场合；缺省时回退到 icon */
+  thumbIcon?: string;
   selectable: boolean;
   enabled: boolean;
   tags?: string[];
@@ -26,6 +28,8 @@ export type Weapon = {
   slot: "primary" | "secondary" | "grenade";
   category: string;
   icon: string;
+  /** 构建时生成的小图，用于只画几十像素的场合；缺省时回退到 icon */
+  thumbIcon?: string;
   enabled: boolean;
 };
 

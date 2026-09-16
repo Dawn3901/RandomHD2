@@ -1,4 +1,9 @@
-FROM m.daocloud.io/docker.io/library/node:22-bookworm-slim
+# 基础镜像默认走 daocloud 镜像站：服务器直连 Docker Hub 不稳定。
+# 本地网络能直连 Docker Hub 时（或 daocloud 不可用时）覆盖它：
+#   docker compose build --build-arg NODE_IMAGE=node:22-bookworm-slim
+# 两个来源拉到的镜像摘要相同，只是分发通道不同。
+ARG NODE_IMAGE=m.daocloud.io/docker.io/library/node:22-bookworm-slim
+FROM ${NODE_IMAGE}
 
 WORKDIR /app
 

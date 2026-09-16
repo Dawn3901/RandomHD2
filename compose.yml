@@ -1,5 +1,8 @@
 ﻿services:
   randomhd2:
+    # 固定镜像名：本地构建后可以用 docker save/load 把它搬到服务器，
+    # 服务器上用 `docker compose up -d --no-build` 直接跑，不在服务器上执行构建。
+    image: randomhd2:local
     build: .
     container_name: randomhd2
     restart: always

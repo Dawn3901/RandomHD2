@@ -4,6 +4,7 @@ import aiohttp
 
 from astrbot.api import AstrBotConfig, logger
 from astrbot.api.event import AstrMessageEvent, filter
+from astrbot.api.message_components import Image
 from astrbot.api.star import Context, Star
 
 DEFAULT_QUICK_ROLL_URL = "http://randomhd2:5173/api/quick-roll"
@@ -38,22 +39,31 @@ class RandomHD2Plugin(Star):
             event: Incoming AstrBot message event.
 
         Yields:
-            Plain text result for the current session.
+            A PNG image result, or a plain-text fallback for the current session.
         """
         try:
             timeout = aiohttp.ClientTimeout(total=self.timeout)
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(self.quick_roll_image_url) as image_response:
                     if image_response.status == 200:
-                        yield event.image_result(self.quick_roll_image_url)
-                        return
+                        image_bytes = await image_response.read()
+                        content_type = image_response.headers.get("Content-Type", "")
+                        if image_bytes and content_type.startswith("image/"):
+                            yield event.chain_result([Image.fromBytes(image_bytes)])
+                            return
 
-                    image_error = (await image_response.text()).strip()
-                    logger.warning(
-                        "RandomHD2 image request failed: status=%s, body=%s",
-                        image_response.status,
-                        image_error[:500],
-                    )
+                        logger.warning(
+                            "RandomHD2 image response was not a usable image: content_type=%s, size=%s",
+                            content_type,
+                            len(image_bytes),
+                        )
+                    else:
+                        image_error = (await image_response.text()).strip()
+                        logger.warning(
+                            "RandomHD2 image request failed: status=%s, body=%s",
+                            image_response.status,
+                            image_error[:500],
+                        )
 
                 async with session.get(self.quick_roll_url) as response:
                     text = (await response.text()).strip()
@@ -75,7 +85,7 @@ class RandomHD2Plugin(Star):
             yield event.plain_result(text)
         except Exception as exc:
             logger.error("RandomHD2 request error: %s", exc, exc_info=True)
-            yield event.plain_result(f"随机配装失败：{exc}")
+            yield event.plain_result("随机配装失败：无法连接 RandomHD2 服务")
 
     async def terminate(self):
         """Clean up plugin resources."""

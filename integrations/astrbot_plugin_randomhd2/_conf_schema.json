@@ -9,7 +9,7 @@
     "description": "RandomHD2 随机配装图片接口",
     "type": "string",
     "default": "http://randomhd2:5173/api/quick-roll.png",
-    "hint": "优先发送的配装图地址。如果 QQ 端无法显示容器内网地址，请改为公网地址，如 http://服务器IP:5173/api/quick-roll.png。"
+    "hint": "插件会下载图片字节后直接发送，因此两个容器在同一 Docker 网络时可使用默认值，无需暴露公网图片地址。"
   },
   "timeout": {
     "description": "请求超时秒数",

@@ -39,6 +39,7 @@ npm run build      # 类型检查 + 构建到 dist/
 | 产物 | 用途 |
 | --- | --- |
 | `public/assets/wiki/` | 从 `assets/wiki/` 复制的图标，供网页访问 |
+| `public/assets/wiki/thumbs/` | 大图的 160px 缩略图（见下方「图标体积与磁盘占用」） |
 | `src/data/generatedCatalog.ts` | 网页端使用的战备/武器目录（编译期导入） |
 | `server/generated-catalog.json` | 服务端随机配装接口使用的目录（运行期读取） |
 
@@ -54,21 +55,48 @@ npm run share      # 先构建，再启动同步服务，地址 http://127.0.0.1
 
 ## Docker 部署（推荐）
 
-```bash
-docker compose up --build -d
-```
+有两种方式，按服务器配置选。
 
-启动后网页和控制台在同一地址：`http://<服务器IP>:5173/`。需要在云服务商的安全组里放行 5173 端口。
-
-更新代码后的标准流程：
+### 方式 A：在服务器上构建
 
 ```bash
+cd /opt/RandomHD2
 git pull
 docker compose up --build -d
-docker compose logs --tail 50     # 确认启动正常
 ```
 
-常用运维命令：
+改动最小，但构建过程本身很吃资源：`npm ci` 要写几百 MB，`npm run build` 要跑 TypeScript、Vite 和 130 张图的缩略图生成。**内存小于 2GB 的服务器上，构建进程会和运行中的容器抢内存，可能触发 OOM 或疯狂 swap——表现为整机卡死。**
+
+### 方式 B：本地构建，把镜像传过去（低配服务器推荐）
+
+镜像构建完全在本地完成，服务器只做 `docker load`，不跑任何构建进程。
+
+```bash
+# 1) 本地：构建镜像（需先启动 Docker Desktop）
+cd /path/to/RandomHD2
+docker compose build --build-arg NODE_IMAGE=node:22-bookworm-slim
+
+# 2) 本地：直接通过 SSH 把镜像送过去（不落地 tar 文件，省一次磁盘读写）
+docker save randomhd2:local | gzip | ssh root@<服务器IP> 'gunzip | docker load'
+
+# 3) 服务器：直接用这个镜像启动，--no-build 保证它不会偷偷开始构建
+cd /opt/RandomHD2
+git pull                      # 只为同步 compose.yml 等配置
+docker compose up -d --no-build
+```
+
+> **关于 `--build-arg NODE_IMAGE`**：Dockerfile 的基础镜像默认指向 daocloud 镜像站，因为国内服务器直连 Docker Hub 不稳。但 daocloud 的分发通道（Cloudflare R2）在你本机可能连不上，报 `httpReadSeeker: failed open ... EOF`。这时用上面的参数改走 Docker Hub 即可——两个来源拉到的镜像摘要完全相同，只是通道不同。服务器端构建不需要这个参数。
+
+`compose.yml` 里固定了 `image: randomhd2:local`，所以两种方式共用同一份配置：本地 `docker compose build` 产出的就是这个标签，服务器 `--no-build` 时用的也是它。如果镜像不存在，`--no-build` 会直接报错而不是默默开始构建——这正是我们要的行为。
+
+几点提示：
+
+- 传输体积通常是几百 MB（未压缩），`gzip` 能压掉一部分；你的上行带宽决定耗时。
+- `docker load` 会跳过本地已有的层，所以第二次之后只写变化的层。
+- 送过去之后，旧的 `randomhd2-randomhd2` 镜像就成了垃圾，可以 `docker image prune` 清掉。
+- 两台机器的架构必须一致（都是 x86_64，一般没问题）；如果是 Apple Silicon 本地构建、x86 服务器运行，需要 `--platform linux/amd64`。
+
+### 常用命令
 
 ```bash
 docker compose ps                 # 查看运行状态
@@ -327,6 +355,19 @@ npm run generate:data     # 也可以直接跑 npm run dev 或 npm run build，�
 | 其他 | 默认按蓝色处理 |
 
 黄色任务战备的 `selectable` 会被设为 `false`，自动排除在随机池之外。新增战备时请确认 SVG 中第一个颜色是背景色，否则分类会不正确。
+
+## 图标体积与磁盘占用
+
+默认保存的武器渲染图是 3840×2160、单张 1MB 以上（全套 140MB+），但配装卡片上图标只画到 58px 见方——直接读原图非常浪费。因此 `generate:data` 会为所有超过 60KB 的 PNG 预生成 **160px 缩略图**（约 130 张，143MB → 约 1MB），并在目录里写成 `thumbIcon` 字段。
+
+配套的两项优化：
+
+- **卡片优先用缩略图**：`server/quick-roll.mjs` 里 `preferredIcon()` 优先取 `thumbIcon`。单次抽卡要从磁盘读取的数据从 **约 2.9MB 降到约 28KB（约 1/104）**，整张卡片 SVG 从 3.4MB 降到 52KB，渲染耗时也随之明显下降。
+- **图标内存缓存**：图标是构建期产物、运行期不变，所以读取结果会缓存起来（以 `size+mtime` 作为失效条件，本地重跑 `generate:data` 后会自动重读）。缓存带 24MB 字节预算，超出后按插入顺序淘汰，避免在内存紧张的机器上把整套图标都缓存进来。
+
+`thumbIcon` 缺省时自动回退到原始 `icon`，所以自定义图标和未生成缩略图的条目都不受影响。缩略图只用于渲染，不影响任何数据与随机结果。
+
+网页端也走 `thumbIcon`（`src/App.tsx` 的 `itemIcon()`）：随机池网格、已选栏、抽取结果、历史配装里的武器图标都用缩略图，一屏十几个图标从十几 MB 降到一百多 KB。战备本身是几 KB 的 SVG，没有缩略图也不受影响。
 
 ## HTTP 接口
 

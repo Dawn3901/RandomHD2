@@ -121,4 +121,39 @@ describe("App rendering", () => {
     expect(html).toContain("wildcard");
     expect(html).toContain("不会进入随机池");
   });
+
+  it("renders weapon icons through the thumbnail instead of the full size file", () => {
+    const stratagem = { id: "s1", nameEn: "Eagle", kind: "red", category: "红色战备", icon: "/assets/wiki/stratagems/e.svg", selectable: true, enabled: true };
+    const roll = {
+      faction: { id: "terminids", nameZh: "终结族", nameEn: "Terminids", icon: "/assets/wiki/factions/Terminid_Icon.svg" },
+      stratagems: [stratagem, stratagem, stratagem, stratagem],
+      primary: { id: "p1", nameEn: "Liberator", slot: "primary", category: "Primary", icon: "/assets/wiki/weapons/full.png", thumbIcon: "/assets/wiki/thumbs/small.png", enabled: true },
+      secondary: { id: "s2", nameEn: "Redeemer", slot: "secondary", category: "Pistol", icon: "/assets/wiki/weapons/full2.png", thumbIcon: "/assets/wiki/thumbs/small2.png", enabled: true },
+      grenade: { id: "g1", nameEn: "Frag", slot: "grenade", category: "Grenade", icon: "/assets/wiki/weapons/full3.png", thumbIcon: "/assets/wiki/thumbs/small3.png", enabled: true },
+    };
+    const html = render({ "randomhd2.lastRoll": JSON.stringify(roll) });
+
+    expect(html).toContain("/assets/wiki/thumbs/small.png");
+    expect(html).toContain("/assets/wiki/thumbs/small2.png");
+    expect(html).toContain("/assets/wiki/thumbs/small3.png");
+    // 原图路径一次都不该出现
+    expect(html).not.toContain("/assets/wiki/weapons/full.png");
+    expect(html).not.toContain("/assets/wiki/weapons/full2.png");
+    expect(html).not.toContain("/assets/wiki/weapons/full3.png");
+  });
+
+  it("falls back to the full size icon when a weapon has no thumbnail", () => {
+    const stratagem = { id: "s1", nameEn: "Eagle", kind: "red", category: "红色战备", icon: "/assets/wiki/stratagems/e.svg", selectable: true, enabled: true };
+    const roll = {
+      faction: { id: "terminids", nameZh: "终结族", nameEn: "Terminids", icon: "/assets/wiki/factions/Terminid_Icon.svg" },
+      stratagems: [stratagem, stratagem, stratagem, stratagem],
+      primary: { id: "custom-1", nameEn: "自制武器", slot: "primary", category: "Primary", icon: "data:image/svg+xml;charset=utf-8,%3Csvg%2F%3E", enabled: true },
+      secondary: { id: "s2", nameEn: "Redeemer", slot: "secondary", category: "Pistol", icon: "/assets/wiki/weapons/full2.png", enabled: true },
+      grenade: { id: "g1", nameEn: "Frag", slot: "grenade", category: "Grenade", icon: "/assets/wiki/weapons/full3.png", enabled: true },
+    };
+    const html = render({ "randomhd2.lastRoll": JSON.stringify(roll) });
+
+    expect(html).toContain("/assets/wiki/weapons/full2.png");
+    expect(html).toContain("/assets/wiki/weapons/full3.png");
+  });
 });

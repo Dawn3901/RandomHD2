@@ -23,13 +23,64 @@ function absoluteAssetUrl(publicBaseUrl, icon) {
   return `${publicBaseUrl.replace(/\/$/, "")}${icon.startsWith("/") ? icon : `/${icon}`}`;
 }
 
+/** 大图优先用构建时生成的缩略图：卡片上图标只画 58px，读原图纯属浪费 */
+function preferredIcon(item) {
+  return item?.thumbIcon || item?.icon || "";
+}
+
+// 图标在镜像里是构建期产物、运行期不会变，所以读一次就能一直复用。
+// 用 size+mtime 作为失效条件，这样本地重跑 generate:data 后会自动重新读取。
+// 带字节预算：内存紧张的机器上不能把整套图标都缓存进来。
+const ICON_CACHE_MAX_BYTES = 24 * 1024 * 1024;
+const iconCache = new Map();
+let iconCacheBytes = 0;
+
+export function clearIconCache() {
+  iconCache.clear();
+  iconCacheBytes = 0;
+}
+
+export function iconCacheStats() {
+  return { entries: iconCache.size, bytes: iconCacheBytes };
+}
+
+function readIconDataUri(resolved, mimeType) {
+  let stamp;
+  try {
+    const stat = fs.statSync(resolved);
+    if (!stat.isFile()) return "";
+    stamp = `${stat.size}:${stat.mtimeMs}`;
+  } catch {
+    return "";
+  }
+
+  const cached = iconCache.get(resolved);
+  if (cached && cached.stamp === stamp) return cached.dataUri;
+
+  const dataUri = `data:${mimeType};base64,${fs.readFileSync(resolved).toString("base64")}`;
+
+  if (cached) iconCacheBytes -= cached.dataUri.length;
+  iconCache.set(resolved, { stamp, dataUri });
+  iconCacheBytes += dataUri.length;
+
+  // 超预算时按插入顺序淘汰最旧的条目
+  while (iconCacheBytes > ICON_CACHE_MAX_BYTES && iconCache.size > 1) {
+    const oldest = iconCache.keys().next().value;
+    const entry = iconCache.get(oldest);
+    iconCache.delete(oldest);
+    iconCacheBytes -= entry.dataUri.length;
+  }
+
+  return dataUri;
+}
+
 function iconDataUri(icon, assetRoot) {
   if (!assetRoot || !icon || /^https?:\/\//i.test(icon)) return "";
 
   const normalizedIcon = icon.replace(/^\/+/, "");
   const resolved = path.resolve(assetRoot, normalizedIcon);
   const resolvedRoot = path.resolve(assetRoot);
-  if (!resolved.startsWith(resolvedRoot) || !fs.existsSync(resolved)) return "";
+  if (!resolved.startsWith(resolvedRoot)) return "";
 
   const ext = path.extname(resolved).toLowerCase();
   const mimeType =
@@ -42,7 +93,7 @@ function iconDataUri(icon, assetRoot) {
           : "";
   if (!mimeType) return "";
 
-  return `data:${mimeType};base64,${fs.readFileSync(resolved).toString("base64")}`;
+  return readIconDataUri(resolved, mimeType);
 }
 
 function iconHref(publicBaseUrl, icon, assetRoot) {
@@ -123,28 +174,28 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
   const itemRows = [
     ...roll.stratagems.map((item, index) => ({
       label: `${index + 1}. ${itemLabel(item)}`,
-      icon: item.icon,
+      icon: preferredIcon(item),
       color: kindColor(item.kind),
       x: index % 2 === 0 ? 54 : 420,
       y: 248 + Math.floor(index / 2) * 112,
     })),
     {
       label: `主武器：${itemLabel(roll.primary)}`,
-      icon: roll.primary.icon,
+      icon: preferredIcon(roll.primary),
       color: "#d4d9df",
       x: 54,
       y: 526,
     },
     {
       label: `副武器：${itemLabel(roll.secondary)}`,
-      icon: roll.secondary.icon,
+      icon: preferredIcon(roll.secondary),
       color: "#d4d9df",
       x: 54,
       y: 638,
     },
     {
       label: `手雷：${itemLabel(roll.grenade)}`,
-      icon: roll.grenade.icon,
+      icon: preferredIcon(roll.grenade),
       color: "#d4d9df",
       x: 420,
       y: 526,
@@ -168,7 +219,7 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
     })
     .join("");
 
-  const factionIcon = iconHref(publicBaseUrl, roll.faction.icon, assetRoot);
+  const factionIcon = iconHref(publicBaseUrl, preferredIcon(roll.faction), assetRoot);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="760" viewBox="0 0 800 760">

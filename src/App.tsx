@@ -74,6 +74,14 @@ function itemLabel(item: { nameZh?: string; nameEn: string }) {
   return item.nameZh || item.nameEn;
 }
 
+/**
+ * 界面上的图标都只显示几十像素，优先用构建时生成的小图。
+ * 武器原图是 3840×2160、单张 1MB 以上，直接用会让浏览器下载几百 MB。
+ */
+function itemIcon(item: { icon: string; thumbIcon?: string }) {
+  return item.thumbIcon || item.icon;
+}
+
 function formatHistoryTime(timestamp: number) {
   return new Intl.DateTimeFormat("zh-CN", {
     month: "2-digit",
@@ -111,7 +119,7 @@ function MiniItem({ item }: { item: Stratagem | Weapon }) {
 
   return (
     <div className="miniItem">
-      <AssetIcon src={item.icon} alt={itemLabel(item)} />
+      <AssetIcon src={itemIcon(item)} alt={itemLabel(item)} />
       <div>
         <strong>{itemLabel(item)}</strong>
         {!isStratagem && <span>{item.category}</span>}
@@ -867,7 +875,7 @@ export default function App() {
                   {result.set.stratagemIds.map((id, index) => {
                     const item = stratagemById.get(id);
                     // 组合里允许重复的占位图标，所以 key 需要带索引
-                    return item ? <AssetIcon key={`${id}-${index}`} src={item.icon} alt={itemLabel(item)} /> : null;
+                    return item ? <AssetIcon key={`${id}-${index}`} src={itemIcon(item)} alt={itemLabel(item)} /> : null;
                   })}
                 </div>
               </div>
@@ -895,7 +903,7 @@ export default function App() {
                   <div className="iconStrip">
                     {entry.set.stratagemIds.map((id, index) => {
                       const item = stratagemById.get(id);
-                      return item ? <AssetIcon key={`${id}-${index}`} src={item.icon} alt={itemLabel(item)} /> : null;
+                      return item ? <AssetIcon key={`${id}-${index}`} src={itemIcon(item)} alt={itemLabel(item)} /> : null;
                     })}
                   </div>
                   <div className="historyActions">
@@ -960,7 +968,7 @@ export default function App() {
                     onClick={() => removeSelectedAt(index)}
                     title={item ? `移除「${itemLabel(item)}」` : "移除这个已失效的战备"}
                   >
-                    {item ? <img src={item.icon} alt="" loading="lazy" /> : <span className="missingIcon">?</span>}
+                    {item ? <img src={itemIcon(item)} alt="" loading="lazy" /> : <span className="missingIcon">?</span>}
                     <em aria-hidden="true">×</em>
                   </button>
                 );
@@ -988,7 +996,7 @@ export default function App() {
                   onClick={() => (wildcard ? addStratagemToSet(item.id) : toggleStratagemInSet(item.id))}
                   title={wildcard ? `${itemLabel(item)}（可重复选）` : itemLabel(item)}
                 >
-                  <img src={item.icon} alt="" loading="lazy" />
+                  <img src={itemIcon(item)} alt="" loading="lazy" />
                   {used > 1 && <em className="choiceBadge">{`×${used}`}</em>}
                 </button>
               );
@@ -1022,7 +1030,7 @@ export default function App() {
                             <div className="iconStrip compact">
                               {set.stratagemIds.map((id, index) => {
                                 const item = stratagemById.get(id);
-                                return item ? <AssetIcon key={`${id}-${index}`} src={item.icon} alt={itemLabel(item)} /> : null;
+                                return item ? <AssetIcon key={`${id}-${index}`} src={itemIcon(item)} alt={itemLabel(item)} /> : null;
                               })}
                             </div>
                           </div>
@@ -1075,7 +1083,7 @@ export default function App() {
               className={enabledSet.has(item.id) ? "catalogItem enabled" : "catalogItem"}
               onClick={() => toggleEnabled(item.id)}
             >
-              <AssetIcon src={item.icon} alt={itemLabel(item)} />
+              <AssetIcon src={itemIcon(item)} alt={itemLabel(item)} />
               <strong>{itemLabel(item)}</strong>
               {!("kind" in item) && <span>{item.category}</span>}
               {customItemIds.has(item.id) && <em className="customTag">自定义</em>}

@@ -1,8 +1,8 @@
 ﻿import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
-import { createQuickRollPng, createQuickRollSvg, createQuickRollText } from "./quick-roll.mjs";
+import { describe, expect, it, vi } from "vitest";
+import { clearIconCache, createQuickRollPng, createQuickRollSvg, createQuickRollText, iconCacheStats } from "./quick-roll.mjs";
 
 const catalog = {
   factions: [
@@ -90,5 +90,96 @@ describe("quick roll API text", () => {
 
     expect(Buffer.isBuffer(png)).toBe(true);
     expect([...png.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  });
+});
+
+describe("icon thumbnails and cache", () => {
+  const THUMB_MARKER = "THUMBNAIL-MARKER";
+
+  /** 卡片里还有阵营图标等，所以要把所有内嵌图标都解出来判断，不能只看第一个 */
+  function decodeIcons(svg) {
+    return [...svg.matchAll(/data:image\/svg\+xml;base64,([A-Za-z0-9+/=]+)/g)].map((match) =>
+      Buffer.from(match[1], "base64").toString("utf8"),
+    );
+  }
+
+  /** 真实图标会带 thumbIcon；这里造一个内容明显不同的缩略图以便断言用的是哪一份 */
+  function catalogWithThumbs(assetRoot) {
+    fs.mkdirSync(path.join(assetRoot, "assets/wiki/thumbs"), { recursive: true });
+    fs.writeFileSync(
+      path.join(assetRoot, "assets/wiki/thumbs/eagle.svg"),
+      `<svg xmlns="http://www.w3.org/2000/svg"><text>${THUMB_MARKER}</text></svg>`,
+    );
+
+    return {
+      ...catalog,
+      stratagems: catalog.stratagems.map((item) =>
+        item.id === "s1" ? { ...item, thumbIcon: "/assets/wiki/thumbs/eagle.svg" } : item,
+      ),
+    };
+  }
+
+  it("prefers the thumbnail over the full size icon", () => {
+    const assetRoot = createAssetRoot();
+    const svg = createQuickRollSvg(catalogWithThumbs(assetRoot), "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+
+    const icons = decodeIcons(svg);
+    expect(icons.some((icon) => icon.includes(THUMB_MARKER))).toBe(true);
+    // 用了缩略图之后，就没有任何一处再读原图了
+    expect(icons).toHaveLength(8);
+  });
+
+  it("falls back to the full size icon when there is no thumbnail", () => {
+    const assetRoot = createAssetRoot();
+    const svg = createQuickRollSvg(catalog, "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+
+    const icons = decodeIcons(svg);
+    expect(icons.length).toBeGreaterThan(0);
+    expect(icons.every((icon) => !icon.includes(THUMB_MARKER))).toBe(true);
+    expect(icons.some((icon) => icon.includes('fill="#fff"'))).toBe(true);
+  });
+
+  it("reads each icon from disk only once across repeated renders", () => {
+    clearIconCache();
+    const assetRoot = createAssetRoot();
+    const spy = vi.spyOn(fs, "readFileSync");
+
+    createQuickRollSvg(catalog, "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+    const firstPass = spy.mock.calls.length;
+    expect(firstPass).toBeGreaterThan(0);
+
+    createQuickRollSvg(catalog, "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+    expect(spy.mock.calls.length).toBe(firstPass);
+
+    spy.mockRestore();
+    expect(iconCacheStats().entries).toBeGreaterThan(0);
+  });
+
+  it("re-reads an icon whose file changed", () => {
+    clearIconCache();
+    const assetRoot = createAssetRoot();
+    const iconPath = path.join(assetRoot, "assets/wiki/stratagems/eagle.svg");
+
+    createQuickRollSvg(catalog, "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+    const before = iconCacheStats().entries;
+
+    fs.writeFileSync(iconPath, '<svg xmlns="http://www.w3.org/2000/svg"><text>CHANGED</text></svg>');
+    fs.utimesSync(iconPath, new Date(), new Date(Date.now() + 2000));
+
+    const svg = createQuickRollSvg(catalog, "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot });
+
+    expect(decodeIcons(svg).some((icon) => icon.includes("CHANGED"))).toBe(true);
+    expect(iconCacheStats().entries).toBe(before);
+  });
+
+  it("ignores a missing icon instead of throwing", () => {
+    clearIconCache();
+    const assetRoot = createAssetRoot();
+
+    expect(() =>
+      createQuickRollSvg(catalog, "https://example.test", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), {
+        assetRoot: path.join(assetRoot, "does-not-exist"),
+      }),
+    ).not.toThrow();
   });
 });
