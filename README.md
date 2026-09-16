@@ -378,6 +378,9 @@ npm run generate:data     # 也可以直接跑 npm run dev 或 npm run build，�
 | `GET /api/quick-roll` | 生成一次随机配装，纯文本 |
 | `GET /api/quick-roll.svg` | 随机配装图片卡（SVG） |
 | `GET /api/quick-roll.png` | 随机配装图片卡（PNG） |
+| `GET /api/quick-roll-stratagems` | 只随机 4 个战备，纯文本 |
+| `GET /api/quick-roll-stratagems.svg` | 只要战备的图片卡（SVG） |
+| `GET /api/quick-roll-stratagems.png` | 只要战备的图片卡（PNG） |
 | `GET /api/wiki/updates` | Wiki 上的图标清单（含是否已导入），只读，缓存 10 分钟 |
 | `GET /api/wiki/icon?title=…&thumb=1` | 代理 Wiki 图标字节，只接受清单内的文件名 |
 | `GET /health` | 健康检查，返回 `{ ok, clients }` |
@@ -385,17 +388,28 @@ npm run generate:data     # 也可以直接跑 npm run dev 或 npm run build，�
 
 ## AstrBot 集成
 
-`integrations/astrbot_plugin_randomhd2/` 是一个 AstrBot 插件，提供 `/随机配装` 指令，调用上面的图片接口并把配装卡发到当前会话。
+`integrations/astrbot_plugin_randomhd2/` 是一个 AstrBot 插件，提供两个指令：
+
+| 指令 | 内容 |
+| --- | --- |
+| `/随机配装` | 阵营 + 4 个战备 + 主副武器 + 手雷，完整配装卡 |
+| `/随机战备` | 只有 4 个战备的卡片（图标 + 名称），适合只想抽战备的场合 |
+
+插件会**自己下载图片字节再发送**（而不是把 URL 交给 QQ 端去取），所以图片地址不需要公网可达；图片接口失败时自动回退到纯文本。
 
 插件配置项（`_conf_schema.json`）：
 
 | 配置 | 默认值 | 说明 |
 | --- | --- | --- |
-| `quick_roll_url` | `http://randomhd2:5173/api/quick-roll` | 文本接口地址，两个容器在同一 Docker 网络时用默认值 |
-| `quick_roll_image_url` | `http://randomhd2:5173/api/quick-roll.png` | 图片接口地址，若 QQ 端无法显示容器内网地址，改为公网地址 |
+| `quick_roll_url` | `http://randomhd2:5173/api/quick-roll` | 文本接口地址 |
+| `quick_roll_image_url` | `http://randomhd2:5173/api/quick-roll.png` | 图片接口地址 |
+| `stratagems_image_url` | 留空 | 留空则沿用 `quick_roll_image_url` 的主机与端口，只换路径 |
+| `stratagems_url` | 留空 | 留空则沿用 `quick_roll_url` 的主机与端口，只换路径 |
 | `timeout` | `10` | 请求超时秒数 |
 
-插件会优先发送图片，图片接口失败时回退到纯文本。
+默认值里的 `randomhd2` 是容器名，只在两个容器处于**同一 Docker 网络**时可用。跨网络时用宿主网关地址，例如把两个地址都设成 `http://172.18.0.1:5173/...`；只要这两个地址配对了，新指令的地址会自动跟着推导出来，不需要额外配置。
+
+> **安装插件后注意**：新装的插件在 AstrBot 里默认是「未启用」。此时**在仪表盘点「启用」会触发 AstrBot 的一个绑定缺陷**——插件在未启用状态下已被绑定过一次处理器，启用时又绑一次，两层叠加导致 `TypeError: ... takes 2 positional arguments but 3 were given`。正确做法是**装好文件后重启 AstrBot**（`docker compose restart astrbot`），让它在启用状态下干净加载一次。若已经把插件搞坏了，重启同样能恢复。
 
 ## 图标资源与许可
 

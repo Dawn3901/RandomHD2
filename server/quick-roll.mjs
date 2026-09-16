@@ -169,40 +169,11 @@ export function createQuickRollText(catalog, rng = defaultRng) {
   return formatQuickRollText(createQuickRoll(catalog, rng));
 }
 
-export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
-  const assetRoot = options.assetRoot || "";
-  const itemRows = [
-    ...roll.stratagems.map((item, index) => ({
-      label: `${index + 1}. ${itemLabel(item)}`,
-      icon: preferredIcon(item),
-      color: kindColor(item.kind),
-      x: index % 2 === 0 ? 54 : 420,
-      y: 248 + Math.floor(index / 2) * 112,
-    })),
-    {
-      label: `主武器：${itemLabel(roll.primary)}`,
-      icon: preferredIcon(roll.primary),
-      color: "#d4d9df",
-      x: 54,
-      y: 526,
-    },
-    {
-      label: `副武器：${itemLabel(roll.secondary)}`,
-      icon: preferredIcon(roll.secondary),
-      color: "#d4d9df",
-      x: 54,
-      y: 638,
-    },
-    {
-      label: `手雷：${itemLabel(roll.grenade)}`,
-      icon: preferredIcon(roll.grenade),
-      color: "#d4d9df",
-      x: 420,
-      y: 526,
-    },
-  ];
+const CARD_WIDTH = 800;
 
-  const rows = itemRows
+/** 把若干「图标 + 名称」的条目画成圆角卡片行；分类颜色由边框体现 */
+function renderItemRows(itemRows, publicBaseUrl, assetRoot) {
+  return itemRows
     .map((item) => {
       const iconUrl = iconHref(publicBaseUrl, item.icon, assetRoot);
       const icon = iconUrl
@@ -211,18 +182,62 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
       return `
         <g>
           <rect x="${item.x}" y="${item.y}" width="326" height="88" rx="14" fill="#182028" stroke="${item.color}" stroke-width="2"/>
-          <rect x="${item.x}" y="${item.y}" width="8" height="88" rx="4" fill="${item.color}"/>
           ${icon}
           <text x="${item.x + 88}" y="${item.y + 39}" class="item">${escapeXml(item.label)}</text>
-          <text x="${item.x + 88}" y="${item.y + 63}" class="sub">${escapeXml(item.color === "#d4d9df" ? "装备" : "战备")}</text>
+          <text x="${item.x + 88}" y="${item.y + 63}" class="sub">${escapeXml(item.sub)}</text>
         </g>`;
     })
     .join("");
+}
 
+function gridPosition(index, startY) {
+  return {
+    x: index % 2 === 0 ? 54 : 420,
+    y: startY + Math.floor(index / 2) * 112,
+  };
+}
+
+export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
+  const assetRoot = options.assetRoot || "";
+  const itemRows = [
+    ...roll.stratagems.map((item, index) => ({
+      label: `${index + 1}. ${itemLabel(item)}`,
+      icon: preferredIcon(item),
+      color: kindColor(item.kind),
+      sub: "战备",
+      ...gridPosition(index, 248),
+    })),
+    {
+      label: `主武器：${itemLabel(roll.primary)}`,
+      icon: preferredIcon(roll.primary),
+      color: "#d4d9df",
+      sub: "装备",
+      x: 54,
+      y: 526,
+    },
+    {
+      label: `副武器：${itemLabel(roll.secondary)}`,
+      icon: preferredIcon(roll.secondary),
+      color: "#d4d9df",
+      sub: "装备",
+      x: 54,
+      y: 638,
+    },
+    {
+      label: `手雷：${itemLabel(roll.grenade)}`,
+      icon: preferredIcon(roll.grenade),
+      color: "#d4d9df",
+      sub: "装备",
+      x: 420,
+      y: 526,
+    },
+  ];
+
+  const rows = renderItemRows(itemRows, publicBaseUrl, assetRoot);
   const factionIcon = iconHref(publicBaseUrl, preferredIcon(roll.faction), assetRoot);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="760" viewBox="0 0 800 760">
+<svg xmlns="http://www.w3.org/2000/svg" width="${CARD_WIDTH}" height="760" viewBox="0 0 ${CARD_WIDTH} 760">
   <style>
     .title { fill: #f3f6f8; font: 700 34px Arial, "Microsoft YaHei", sans-serif; }
     .label { fill: #99a6b3; font: 500 18px Arial, "Microsoft YaHei", sans-serif; }
@@ -230,7 +245,7 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
     .item { fill: #f3f6f8; font: 700 20px Arial, "Microsoft YaHei", sans-serif; }
     .sub { fill: #8794a1; font: 500 14px Arial, "Microsoft YaHei", sans-serif; }
   </style>
-  <rect width="800" height="760" fill="#0d1117"/>
+  <rect width="${CARD_WIDTH}" height="760" fill="#0d1117"/>
   <rect x="24" y="24" width="752" height="712" rx="24" fill="#111821" stroke="#2c3742"/>
   <text x="54" y="82" class="title">地狱潜兵2 随机配装</text>
   <text x="54" y="124" class="label">HELLDIVERS 2 QUICK LOADOUT</text>
@@ -247,11 +262,62 @@ export function formatQuickRollSvg(roll, publicBaseUrl = "", options = {}) {
 </svg>`;
 }
 
+/** 只要 4 个战备的卡片：图标 + 名称，不含阵营与武器 */
+export function formatStratagemRollSvg(roll, publicBaseUrl = "", options = {}) {
+  const assetRoot = options.assetRoot || "";
+  const itemRows = roll.stratagems.map((item, index) => ({
+    label: `${index + 1}. ${itemLabel(item)}`,
+    icon: preferredIcon(item),
+    color: kindColor(item.kind),
+    sub: "战备",
+    ...gridPosition(index, 176),
+  }));
+
+  const rows = renderItemRows(itemRows, publicBaseUrl, assetRoot);
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${CARD_WIDTH}" height="470" viewBox="0 0 ${CARD_WIDTH} 470">
+  <style>
+    .title { fill: #f3f6f8; font: 700 34px Arial, "Microsoft YaHei", sans-serif; }
+    .label { fill: #99a6b3; font: 500 18px Arial, "Microsoft YaHei", sans-serif; }
+    .item { fill: #f3f6f8; font: 700 20px Arial, "Microsoft YaHei", sans-serif; }
+    .sub { fill: #8794a1; font: 500 14px Arial, "Microsoft YaHei", sans-serif; }
+  </style>
+  <rect width="${CARD_WIDTH}" height="470" fill="#0d1117"/>
+  <rect x="24" y="24" width="752" height="422" rx="24" fill="#111821" stroke="#2c3742"/>
+  <text x="54" y="82" class="title">地狱潜兵2 随机战备</text>
+  <text x="54" y="124" class="label">HELLDIVERS 2 RANDOM STRATAGEMS</text>
+  ${rows}
+  <text x="54" y="424" class="sub">由 RandomHD2 生成</text>
+</svg>`;
+}
+
+export function formatStratagemRollText(roll) {
+  return [
+    "地狱潜兵2 随机战备",
+    "",
+    ...roll.stratagems.map((item, index) => `${index + 1}. ${itemLabel(item)}`),
+  ].join("\n");
+}
+
 export function createQuickRollSvg(catalog, publicBaseUrl = "", rng = defaultRng, options = {}) {
   return formatQuickRollSvg(createQuickRoll(catalog, rng), publicBaseUrl, options);
 }
 
 export async function createQuickRollPng(catalog, publicBaseUrl = "", rng = defaultRng, options = {}) {
   const svg = createQuickRollSvg(catalog, publicBaseUrl, rng, options);
+  return sharp(Buffer.from(svg)).png().toBuffer();
+}
+
+export function createStratagemRollSvg(catalog, publicBaseUrl = "", rng = defaultRng, options = {}) {
+  return formatStratagemRollSvg(createQuickRoll(catalog, rng), publicBaseUrl, options);
+}
+
+export function createStratagemRollText(catalog, rng = defaultRng) {
+  return formatStratagemRollText(createQuickRoll(catalog, rng));
+}
+
+export async function createStratagemRollPng(catalog, publicBaseUrl = "", rng = defaultRng, options = {}) {
+  const svg = createStratagemRollSvg(catalog, publicBaseUrl, rng, options);
   return sharp(Buffer.from(svg)).png().toBuffer();
 }

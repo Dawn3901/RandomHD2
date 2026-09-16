@@ -2,7 +2,16 @@
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { clearIconCache, createQuickRollPng, createQuickRollSvg, createQuickRollText, iconCacheStats } from "./quick-roll.mjs";
+import {
+  clearIconCache,
+  createQuickRollPng,
+  createQuickRollSvg,
+  createQuickRollText,
+  createStratagemRollPng,
+  createStratagemRollSvg,
+  createStratagemRollText,
+  iconCacheStats,
+} from "./quick-roll.mjs";
 
 const catalog = {
   factions: [
@@ -90,6 +99,85 @@ describe("quick roll API text", () => {
 
     expect(Buffer.isBuffer(png)).toBe(true);
     expect([...png.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  });
+});
+
+describe("stratagem-only roll", () => {
+  const rng = () => sequenceRng([0.9, 0, 0, 0, 0, 0, 0]);
+
+  it("lists only the four stratagems as text", () => {
+    const text = createStratagemRollText(catalog, sequenceRng([0, 0, 0, 0, 0, 0, 0]));
+
+    expect(text).toContain("地狱潜兵2 随机战备");
+    expect(text).toContain("1. Eagle Airstrike");
+    expect(text).toContain("4. Autocannon Sentry");
+    // 不含武器与阵营
+    expect(text).not.toContain("主武器");
+    expect(text).not.toContain("手雷");
+    expect(text).not.toContain("敌方阵营");
+  });
+
+  it("renders a card without the weapon or faction sections", () => {
+    const svg = createStratagemRollSvg(catalog, "https://example.test", rng());
+
+    expect(svg).toContain("<svg");
+    expect(svg).toContain("地狱潜兵2 随机战备");
+    expect(svg).toContain("Eagle Airstrike");
+    expect(svg).toContain("Autocannon Sentry");
+    expect(svg).not.toContain("敌方阵营");
+    expect(svg).not.toContain("主武器");
+    expect(svg).not.toContain("武器：");
+    // 只有 4 个战备行，所以只有 4 组卡片矩形
+    expect((svg.match(/width="326"/g) || []).length).toBe(4);
+  });
+
+  it("keeps the four stratagems unique and excludes mission stratagems", () => {
+    const svg = createStratagemRollSvg(catalog, "", rng());
+
+    expect(svg).not.toContain("Mission Stratagem");
+    for (const name of ["Eagle Airstrike", "Orbital Laser", "Supply Pack", "Autocannon Sentry"]) {
+      expect((svg.match(new RegExp(name, "g")) || []).length).toBe(1);
+    }
+  });
+
+  it("inlines local icons and renders a PNG", async () => {
+    const assetRoot = createAssetRoot();
+
+    const svg = createStratagemRollSvg(catalog, "https://example.test", rng(), { assetRoot });
+    expect(svg).toContain("data:image/svg+xml;base64,");
+    expect(svg).not.toContain("https://example.test/assets/wiki/stratagems/eagle.svg");
+
+    const png = await createStratagemRollPng(catalog, "https://example.test", rng(), { assetRoot });
+    expect([...png.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  });
+
+  it("keeps the full loadout card unchanged by the shared row renderer", () => {
+    const svg = createQuickRollSvg(catalog, "", rng());
+
+    // 重构前这两行标签的依据是颜色，现在是显式字段，输出必须一致：
+    // 战备 = 1 个区块标签 + 4 行，装备 = 3 行（没有区块标签）
+    expect((svg.match(/>战备</g) || []).length).toBe(5);
+    expect((svg.match(/>装备</g) || []).length).toBe(3);
+    expect(svg).toContain("敌方阵营");
+    expect(svg).toContain("主武器：");
+    expect(svg).toContain("副武器：");
+    expect(svg).toContain("手雷：");
+  });
+});
+
+describe("card row style", () => {
+  it("draws no thick colour rail on the left edge", () => {
+    const assetRoot = createAssetRoot();
+    const cards = [
+      createQuickRollSvg(catalog, "", sequenceRng([0.9, 0, 0, 0, 0, 0, 0]), { assetRoot }),
+      createStratagemRollSvg(catalog, "", sequenceRng([0, 0, 0, 0, 0, 0, 0]), { assetRoot }),
+    ];
+
+    for (const svg of cards) {
+      // 每行只有外框那一个矩形；分类颜色靠 2px 边框体现
+      expect((svg.match(/width="8" height="88"/g) || []).length).toBe(0);
+      expect((svg.match(/width="326" height="88"/g) || []).length).toBeGreaterThan(0);
+    }
   });
 });
 

@@ -3,13 +3,25 @@
     "description": "RandomHD2 随机配装接口",
     "type": "string",
     "default": "http://randomhd2:5173/api/quick-roll",
-    "hint": "AstrBot 容器可访问的 RandomHD2 API 地址。两个容器在同一 Docker 网络时可使用默认值。"
+    "hint": "AstrBot 容器可访问的 RandomHD2 API 地址。两个容器在同一 Docker 网络时可使用默认值；跨网络时可用宿主网关，例如 http://172.18.0.1:5173/api/quick-roll。"
   },
   "quick_roll_image_url": {
     "description": "RandomHD2 随机配装图片接口",
     "type": "string",
     "default": "http://randomhd2:5173/api/quick-roll.png",
     "hint": "插件会下载图片字节后直接发送，因此两个容器在同一 Docker 网络时可使用默认值，无需暴露公网图片地址。"
+  },
+  "stratagems_image_url": {
+    "description": "随机战备图片接口（可选）",
+    "type": "string",
+    "default": "",
+    "hint": "留空即可：默认沿用「随机配装图片接口」的主机和端口，只把路径换成 /api/quick-roll-stratagems.png。"
+  },
+  "stratagems_url": {
+    "description": "随机战备文本接口（可选）",
+    "type": "string",
+    "default": "",
+    "hint": "留空即可：默认沿用「随机配装接口」的主机和端口，只把路径换成 /api/quick-roll-stratagems。"
   },
   "timeout": {
     "description": "请求超时秒数",

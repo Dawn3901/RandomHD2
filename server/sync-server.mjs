@@ -3,7 +3,14 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
-import { createQuickRollPng, createQuickRollSvg, createQuickRollText } from "./quick-roll.mjs";
+import {
+  createQuickRollPng,
+  createQuickRollSvg,
+  createQuickRollText,
+  createStratagemRollPng,
+  createStratagemRollSvg,
+  createStratagemRollText,
+} from "./quick-roll.mjs";
 import { loadStoredState, normalizeCustomItems, saveStoredState } from "./state-store.mjs";
 import {
   FACTION_TITLES,
@@ -278,6 +285,34 @@ const server = http.createServer(async (request, response) => {
   if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll.png") {
     try {
       sendPng(response, 200, await createQuickRollPng(catalog, publicBaseUrlFor(request), undefined, { assetRoot: publicDir }));
+    } catch (error) {
+      sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
+    }
+    return;
+  }
+
+  // 只要 4 个战备的版本，供 QQ 指令「随机战备」使用
+  if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll-stratagems") {
+    try {
+      sendText(response, 200, createStratagemRollText(catalog));
+    } catch (error) {
+      sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
+    }
+    return;
+  }
+
+  if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll-stratagems.svg") {
+    try {
+      sendSvg(response, 200, createStratagemRollSvg(catalog, publicBaseUrlFor(request), undefined, { assetRoot: publicDir }));
+    } catch (error) {
+      sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
+    }
+    return;
+  }
+
+  if (request.method === "GET" && request.url?.split("?")[0] === "/api/quick-roll-stratagems.png") {
+    try {
+      sendPng(response, 200, await createStratagemRollPng(catalog, publicBaseUrlFor(request), undefined, { assetRoot: publicDir }));
     } catch (error) {
       sendJson(response, 500, { error: error instanceof Error ? error.message : "随机失败" });
     }
