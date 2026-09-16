@@ -25,4 +25,7 @@ ENV RANDOMHD2_STATE_FILE=/app/.randomhd2/sync-state.json
 
 EXPOSE 5173
 
-CMD ["npm", "run", "sync", "--", "--host", "0.0.0.0", "--port", "5173"]
+# 直接启动服务器，不要再跑 generate:data——镜像构建时（上面的 npm run build）
+# 已经生成过图标目录、目录数据和 130 张缩略图，启动时重跑只会白读约 290MB 磁盘、
+# 烧掉约 28 秒 CPU。HOST / PORT / RANDOMHD2_STATE_FILE 都从上面的 ENV 读取。
+CMD ["node", "server/sync-server.mjs"]

@@ -6,6 +6,9 @@
     build: .
     container_name: randomhd2
     restart: always
+    # 与镜像里的 CMD 相同，放在这里是为了不重建镜像也能生效：
+    # 镜像构建时已生成好全部产物，启动时不需要再跑 generate:data。
+    command: ["node", "server/sync-server.mjs"]
     ports:
       - "5173:5173"
     environment:
